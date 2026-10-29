@@ -29,8 +29,8 @@ http:
       - name: avatar
         type: file
         value:
-          - C:\Users\kazio\Downloads\snapclip_logo_sample_1789885760854.jpg
-        contentType: image/jpeg
+          - C:\Users\kazio\Downloads\Server_Lockscreen_Warning.png
+        contentType: image/png
       - name: email
         type: text
         value: user@yopmail.com

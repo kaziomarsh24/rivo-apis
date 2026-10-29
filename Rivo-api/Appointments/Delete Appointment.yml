@@ -1,0 +1,53 @@
+info:
+  name: Delete Appointment
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{base_url}}/v1/appointments/:appointmentId"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: appointmentId
+      value: "1"
+      type: path
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: |-
+  # Delete Appointment
+
+  Deletes an existing pet appointment and clears associated caches.
+
+  ---
+
+  ## Request Details
+  - **Method:** `DELETE`
+  - **URL:** `{{base_url}}/v1/appointments/:appointmentId`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `appointmentId` | integer | Yes | ID of the appointment to delete |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Appointment deleted successfully",
+    "data": []
+  }
+  ```
