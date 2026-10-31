@@ -164,3 +164,4 @@ docs: |-
   - **401 Unauthorized:** Missing or invalid Bearer token.
   - **403 Forbidden:** Pet belongs to another user.
   - **404 Not Found:** Pet not found.
+
