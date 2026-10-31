@@ -1,0 +1,120 @@
+info:
+  name: Get Emergency Mode Guidance
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/emergency/mode"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Emergency Mode Guidance API
+
+  Retrieves the complete **Emergency Mode payload** matching Figma's red alert screen (`emergency_mode_screen.png`).
+  
+  ## Figma Screen
+  - **Screen:** `Emergency Mode` (Canvas: Emergency Cluster)
+  - **UI Elements:**
+    - Warning Triangle Header & Subtitle ("Stay calm. Follow these steps while getting professional help.")
+    - **5 First-Aid Guidance Steps:**
+      1. `01 Stay calm - your pet senses your stress and it can worsen their condition.`
+      2. `02 Do not give any human medications unless directed by a vet.`
+      3. `03 If breathing is laboured, keep the airway clear and keep the pet still.`
+      4. `04 For bleeding wounds, apply gentle pressure with a clean cloth.`
+      5. `05 Transport carefully - use a carrier or blanket to minimize movement.`
+    - **Trusted Vet Action Button:** Direct dial button connecting to user's saved Primary Vet or Secondary Vet.
+    - **Locate Emergency Clinic Action Button:** Navigates to nearby 24/7 clinic locator map/feed.
+    - **Disclaimer Text:** "In a life-threatening emergency, always call your vet or emergency clinic directly. RivoCare AI is not a substitute for professional veterinary care."
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/emergency/mode`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Emergency mode payload retrieved successfully",
+    "data": {
+      "mode_title": "Emergency Mode",
+      "mode_subtitle": "Stay calm. Follow these steps while getting professional help.",
+      "guidance_steps": [
+        {
+          "step": 1,
+          "number": "01",
+          "title": "Stay Calm",
+          "description": "Stay calm - your pet senses your stress and it can worsen their condition.",
+          "icon": "peace"
+        },
+        {
+          "step": 2,
+          "number": "02",
+          "title": "No Human Medications",
+          "description": "Do not give any human medications unless directed by a vet.",
+          "icon": "medicine_ban"
+        },
+        {
+          "step": 3,
+          "number": "03",
+          "title": "Keep Airway Clear",
+          "description": "If breathing is laboured, keep the airway clear and keep the pet still.",
+          "icon": "airway"
+        },
+        {
+          "step": 4,
+          "number": "04",
+          "title": "Apply Wound Pressure",
+          "description": "For bleeding wounds, apply gentle pressure with a clean cloth.",
+          "icon": "bandage"
+        },
+        {
+          "step": 5,
+          "number": "05",
+          "title": "Transport Carefully",
+          "description": "Transport carefully - use a carrier or blanket to minimize movement.",
+          "icon": "carrier"
+        }
+      ],
+      "trusted_vet": {
+        "has_contact": true,
+        "primary": {
+          "id": 1,
+          "name": "Dr. Sarah Williams",
+          "phone_number": "+1 (408) 555-0199",
+          "notes": "Primary 24/7 Vet Contact",
+          "type": "primary"
+        },
+        "secondary": {
+          "id": 2,
+          "name": "Dr. Robert Miller",
+          "phone_number": "+1 (408) 555-0288",
+          "notes": "Secondary Vet Contact",
+          "type": "secondary"
+        },
+        "dial_number": "+1 (408) 555-0199",
+        "button_text": "Trusted Vet"
+      },
+      "locate_clinic_button": {
+        "text": "Locate Emergency Clinic",
+        "action": "open_clinic_locator"
+      },
+      "disclaimer": "In a life-threatening emergency, always call your vet or emergency clinic directly. RivoCare AI is not a substitute for professional veterinary care."
+    }
+  }
+  ```
+
+  ---
+
+  ## Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
