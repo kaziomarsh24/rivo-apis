@@ -95,3 +95,4 @@ docs: |-
   ## Error Responses
   - **404 Not Found:** Clinic not found.
   - **401 Unauthorized:** Missing or invalid Bearer token.
+

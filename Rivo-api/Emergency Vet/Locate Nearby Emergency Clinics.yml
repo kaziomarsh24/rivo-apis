@@ -107,3 +107,4 @@ docs: |-
   ## Error Responses
   - **422 Unprocessable Entity:** Invalid coordinates or radius range.
   - **401 Unauthorized:** Missing or invalid Bearer token.
+
