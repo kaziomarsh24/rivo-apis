@@ -1,0 +1,56 @@
+info:
+  name: Toggle Lesson Bookmark
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/training/pets/1/lessons/1/bookmark"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Toggle Lesson Bookmark API
+
+  Saves or removes a training lesson from the pet's bookmarked list. Calling this endpoint toggles the state:
+  - If not bookmarked: Adds to bookmarks and returns `is_bookmarked: true`.
+  - If already bookmarked: Deletes the bookmark and returns `is_bookmarked: false`.
+
+  ## Figma Screen
+  - **Screen:** Bookmark icon button on lesson cards and tutorial detail header
+  - **UI Effects:** Toggles bookmark icon fill state (outline vs filled green).
+
+  ---
+
+  ## Request Details
+  - **Method:** `POST`
+  - **URL:** `{{base_url}}/v1/training/pets/:petId/lessons/:lessonId/bookmark`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Pet ID |
+  | `lessonId` | integer | Yes | Lesson ID to bookmark / un-bookmark |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Lesson bookmarked successfully.",
+    "data": {
+      "is_bookmarked": true
+    }
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Authenticated user is not the owner of this pet.
+  - **404 Not Found:** Pet or Lesson not found.

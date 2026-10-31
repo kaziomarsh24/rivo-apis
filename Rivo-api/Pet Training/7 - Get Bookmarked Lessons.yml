@@ -1,0 +1,82 @@
+info:
+  name: Get Bookmarked Lessons
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/training/pets/1/bookmarks"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Bookmarked Lessons API
+
+  Retrieves all training lessons currently bookmarked by the user for the active pet. Useful for quick access to saved drills and routines.
+
+  ## Figma Screen
+  - **Screen:** Bookmarked Lessons Feed / "Saved Lessons" Tab
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/training/pets/:petId/bookmarks`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Active pet ID (e.g. `1` for Pedro) |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Bookmarked lessons retrieved successfully",
+    "data": [
+      {
+        "id": 1,
+        "category_id": 1,
+        "category": {
+          "id": 1,
+          "name": "Basic Commands",
+          "slug": "basic-commands",
+          "subtitle": "Foundational obedience skills",
+          "icon": "http://localhost:81/storage/training/icons/basic.png",
+          "order_column": 1
+        },
+        "title": "Teach \"Sit\" Command",
+        "slug": "teach-sit-command",
+        "tag": "TRAINING Short",
+        "species": "dog",
+        "difficulty": "beginner",
+        "duration_minutes": 10,
+        "duration_formatted": "10 min",
+        "impact": "Low impact",
+        "reward_tp": 2,
+        "reward_tp_formatted": "+2 TP",
+        "reward_xp": 20,
+        "summary": "A great confidence-builder for your pet.",
+        "description": "The foundational building block of all obedience.",
+        "thumbnail": null,
+        "video_url": null,
+        "is_plus_only": false,
+        "is_bookmarked": true,
+        "is_completed": true,
+        "completed_at": "2026-10-31T05:48:19.000000Z"
+      }
+    ]
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Authenticated user is not the owner of this pet.
+  - **404 Not Found:** Pet not found.

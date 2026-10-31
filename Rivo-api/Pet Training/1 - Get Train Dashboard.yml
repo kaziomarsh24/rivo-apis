@@ -1,0 +1,120 @@
+info:
+  name: Get Train Dashboard
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/training/home/1"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Train Dashboard API
+
+  Retrieves the complete personalized **Train Home screen feed** for the active pet, perfectly matching the Figma Train canvas. Powered by `TrainingService` and `thekaziomar/laravel-atomic-cache` (v1.5.0).
+
+  ## Figma Screen
+  - **Screen:** `Train` (Main Feed)
+  - **UI Elements:**
+    - **Pet Rank Card:** Displays current tier (e.g. `Gold III`), star badge, Training Points progress bar (`70 to Gold II | 700/770 TP`), and consecutive training streak days (`streak_days: 5`).
+    - **AI Training Coach Banner:** Subscription upgrade banner (`Rivo Plus required`) with personalized plan description and unlock status.
+    - **Categories Grid/Carousel:** Active categories (`Basic`, `Walking`, `Tricks`, `Behavior`) with dynamic lesson count badges.
+    - **Recommended Lessons:** Personalized list filtered for pet's species & age, displaying duration badge, impact level, `+2 TP` reward, and live `is_bookmarked` / `is_completed` flags.
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/training/home/:petId`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Active pet ID (e.g. `1` for Pedro) |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Train dashboard retrieved successfully",
+    "data": {
+      "rank": {
+        "current_rank": "Gold III",
+        "total_tp": 700,
+        "next_rank": "Platinum I",
+        "tp_to_next": 70,
+        "target_tp": 770,
+        "progress_percentage": 90.9,
+        "streak_days": 5
+      },
+      "ai_coach": {
+        "is_unlocked": false,
+        "title": "AI Training Coach",
+        "subtitle": "Get a personalised AI training plan built around your pet's progress, breed, and age - adapting every session automatically.",
+        "required_tier": "Rivo Plus"
+      },
+      "categories": [
+        {
+          "id": 1,
+          "name": "Basic Commands",
+          "slug": "basic-commands",
+          "subtitle": "Foundational obedience skills",
+          "icon": "http://localhost:81/storage/training/icons/basic.png",
+          "order_column": 1,
+          "lessons_count": 4
+        },
+        {
+          "id": 2,
+          "name": "Walking",
+          "slug": "walking",
+          "subtitle": "Leash manners and outdoor focus",
+          "icon": "http://localhost:81/storage/training/icons/walking.png",
+          "order_column": 2,
+          "lessons_count": 3
+        }
+      ],
+      "recommended_lessons": [
+        {
+          "id": 1,
+          "category_id": 1,
+          "category": {
+            "id": 1,
+            "name": "Basic Commands",
+            "slug": "basic-commands",
+            "icon": "http://localhost:81/storage/training/icons/basic.png"
+          },
+          "title": "Teach \"Sit\" Command",
+          "slug": "teach-sit-command",
+          "tag": "TRAINING Short",
+          "species": "dog",
+          "difficulty": "beginner",
+          "duration_minutes": 10,
+          "duration_formatted": "10 min",
+          "impact": "Low impact",
+          "reward_tp": 2,
+          "reward_tp_formatted": "+2 TP",
+          "reward_xp": 20,
+          "summary": "A great confidence-builder for your pet.",
+          "thumbnail": null,
+          "is_plus_only": false,
+          "is_bookmarked": false,
+          "is_completed": true,
+          "completed_at": "2026-10-31T05:48:19.000000Z"
+        }
+      ]
+    }
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Authenticated user is not the owner of this pet.
+  - **404 Not Found:** Pet with given ID does not exist.

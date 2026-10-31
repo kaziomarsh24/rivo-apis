@@ -1,0 +1,81 @@
+info:
+  name: Get Training Categories
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/training/categories"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Training Categories API
+
+  Lists all active training categories along with their active lesson counts. High-throughput endpoint cached using `laravel-atomic-cache` (v1.5.0) under the `training_categories` tag with automatic invalidation on updates.
+
+  ## Figma Screen
+  - **Screen:** `Categories`
+  - **UI Elements:** Vertical list showing category icon, title (`Basic Commands`, `Walking`, `Tricks`, `Behavior`), and count badge (`4 Lessons`, `3 Lessons`).
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/training/categories`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Training categories retrieved successfully",
+    "data": [
+      {
+        "id": 1,
+        "name": "Basic Commands",
+        "slug": "basic-commands",
+        "subtitle": "Foundational obedience skills",
+        "icon": "http://localhost:81/storage/training/icons/basic.png",
+        "order_column": 1,
+        "lessons_count": 4
+      },
+      {
+        "id": 2,
+        "name": "Walking",
+        "slug": "walking",
+        "subtitle": "Leash manners and outdoor focus",
+        "icon": "http://localhost:81/storage/training/icons/walking.png",
+        "order_column": 2,
+        "lessons_count": 3
+      },
+      {
+        "id": 3,
+        "name": "Tricks",
+        "slug": "tricks",
+        "subtitle": "Fun and engaging mental exercises",
+        "icon": "http://localhost:81/storage/training/icons/tricks.png",
+        "order_column": 3,
+        "lessons_count": 3
+      },
+      {
+        "id": 4,
+        "name": "Behavior",
+        "slug": "behavior",
+        "subtitle": "Crate comfort, impulse control, and calm",
+        "icon": "http://localhost:81/storage/training/icons/behavior.png",
+        "order_column": 4,
+        "lessons_count": 3
+      }
+    ]
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or expired authentication token.

@@ -1,0 +1,130 @@
+info:
+  name: Browse and Filter Lessons
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/training/lessons"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: pet_id
+      value: "1"
+      type: query
+      description: "Pet ID to attach personalized completion & bookmark status"
+      disabled: false
+    - name: filter[category_slug]
+      value: basic-commands
+      type: query
+      description: "Filter by category slug (basic-commands, walking, tricks, behavior)"
+      disabled: false
+    - name: filter[difficulty]
+      value: beginner
+      type: query
+      description: "Filter by difficulty (beginner, intermediate, advanced, master)"
+      disabled: false
+    - name: filter[species]
+      value: dog
+      type: query
+      description: "Filter by target pet species (dog, cat, all)"
+      disabled: true
+    - name: filter[max_duration]
+      value: "15"
+      type: query
+      description: "Maximum lesson duration in minutes"
+      disabled: true
+    - name: filter[title]
+      value: Sit
+      type: query
+      description: "Partial search query on lesson title"
+      disabled: true
+    - name: sort
+      value: order_column
+      type: query
+      description: "Sort order: order_column, duration_minutes, -reward_tp, -created_at"
+      disabled: true
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Browse and Filter Lessons API
+
+  Global lesson discovery and filtering endpoint powered by Spatie QueryBuilder and `thekaziomar/laravel-atomic-cache` (v1.5.0).
+  The catalog query itself is cached across all users, while personal status (`is_completed`, `is_bookmarked`) is calculated and attached in-memory for the active `pet_id`.
+
+  ## Figma Screen
+  - **Screen:** `Basic Commands` (Category view) & `Filter Modal`
+  - **UI Elements:**
+    - **Difficulty Filter Tabs:** `All`, `Beginner`, `Intermediate`, `Advanced`, `Master`.
+    - **Filter Drawer/Modal:** Species pills (`Dog`, `Cat`), Duration chips (`5 min`, `10 min`, `15 min`, `20+ min`), Category select.
+    - **Lesson Card Grid:** Lesson tag, title, difficulty badge, duration, impact level, reward (+2 TP), bookmark icon, and completion tick.
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/training/lessons`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Query Parameters
+  | Parameter | Type | Required | Default | Description |
+  | :--- | :--- | :--- | :--- | :--- |
+  | `pet_id` | integer | No | null | Pet ID to attach personalized `is_completed` and `is_bookmarked` flags |
+  | `filter[category_slug]` | string | No | null | Filter by category slug (`basic-commands`, `walking`, `tricks`, `behavior`) |
+  | `filter[category_id]` | integer | No | null | Filter by category ID |
+  | `filter[difficulty]` | string | No | null | `beginner`, `intermediate`, `advanced`, `master` |
+  | `filter[species]` | string | No | null | `dog`, `cat`, `all` |
+  | `filter[max_duration]` | integer | No | null | Maximum duration in minutes (e.g. `10`, `15`, `20`) |
+  | `filter[is_plus_only]` | boolean | No | null | Filter Rivo Plus exclusive lessons (`true`/`false`) |
+  | `filter[title]` | string | No | null | Search keyword in title (partial match) |
+  | `sort` | string | No | `order_column` | `order_column`, `duration_minutes`, `-reward_tp`, `-created_at` |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lessons retrieved successfully",
+    "data": [
+      {
+        "id": 1,
+        "category_id": 1,
+        "category": {
+          "id": 1,
+          "name": "Basic Commands",
+          "slug": "basic-commands",
+          "subtitle": "Foundational obedience skills",
+          "icon": "http://localhost:81/storage/training/icons/basic.png",
+          "order_column": 1
+        },
+        "title": "Teach \"Sit\" Command",
+        "slug": "teach-sit-command",
+        "tag": "TRAINING Short",
+        "species": "dog",
+        "difficulty": "beginner",
+        "duration_minutes": 10,
+        "duration_formatted": "10 min",
+        "impact": "Low impact",
+        "reward_tp": 2,
+        "reward_tp_formatted": "+2 TP",
+        "reward_xp": 20,
+        "summary": "A great confidence-builder for your pet.",
+        "description": "The foundational building block of all obedience.",
+        "thumbnail": null,
+        "video_url": null,
+        "is_plus_only": false,
+        "is_bookmarked": false,
+        "is_completed": true,
+        "completed_at": "2026-10-31T05:48:19.000000Z"
+      }
+    ]
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Provided `pet_id` does not belong to the authenticated user.

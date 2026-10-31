@@ -1,0 +1,73 @@
+info:
+  name: Complete Training Lesson
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/training/pets/1/lessons/1/complete"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Complete Training Lesson API
+
+  Marks a lesson as successfully completed by the active pet. Triggers the core gamification engine:
+  1. **Rewards:** Awards Training Points (`reward_tp`) and Pet XP (`reward_xp`).
+  2. **Rank Progression:** Recalculates pet tier (e.g. `Gold III` -> `Platinum I`) and updates target TP.
+  3. **Multi-Streak Engine:** Increments consecutive `Training Streak` days and updates all-time record (`longest_streak_days`).
+  4. **Activity Timeline:** Automatically records completion timestamp for the unified Daily Activity Timeline.
+
+  ## Figma Screen
+  - **Screen:** `Lesson Detail -> "Mark Complete" Floating Action Button`
+  - **UI Effects:** Success confetti / reward popup modal displaying earned TP badge (`+2 TP`), XP earned (`+20 XP`), and updated rank progress bar.
+
+  ---
+
+  ## Request Details
+  - **Method:** `POST`
+  - **URL:** `{{base_url}}/v1/training/pets/:petId/lessons/:lessonId/complete`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Pet ID completing the lesson |
+  | `lessonId` | integer | Yes | Lesson ID being completed |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Lesson 'Teach \"Sit\" Command' completed successfully!",
+    "data": {
+      "rewards": {
+        "tp_earned": 2,
+        "xp_earned": 20,
+        "is_first_completion": true
+      },
+      "rank": {
+        "current_rank": "Gold III",
+        "total_tp": 702,
+        "next_rank": "Platinum I",
+        "tp_to_next": 68,
+        "progress_percentage": 91.2
+      },
+      "streak": {
+        "current_streak_days": 5,
+        "longest_streak_days": 12
+      }
+    }
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Authenticated user is not the owner of this pet.
+  - **404 Not Found:** Pet or Lesson not found.

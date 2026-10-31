@@ -1,0 +1,121 @@
+info:
+  name: Get Lesson Step-by-Step Details
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/training/lessons/1"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: pet_id
+      value: "1"
+      type: query
+      description: "Pet ID to attach personalized completion & bookmark status"
+      disabled: false
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Lesson Step-by-Step Details API
+
+  Returns the complete tutorial walkthrough for a training lesson, including sequential steps, verbal cues, handler instructions, training tips, and visual illustration URLs.
+
+  ## Figma Screen
+  - **Screen:** `Lesson Detail & Step-by-Step Tutorial`
+  - **UI Elements:**
+    - Header with Lesson Title, Tag, Difficulty, Duration, and Reward Points (`+2 TP`, `+20 XP`).
+    - Bookmark button & Video Guide preview (if available).
+    - Sequential Step cards: Step Number badge, Step Title, Handler Instructions, Pro Tips box, and Illustration image.
+    - Floating action button: **"Mark Complete"** (initiates completion and streak calculation).
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/training/lessons/:lessonId`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `lessonId` | integer | Yes | Training lesson ID |
+
+  ### Query Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `pet_id` | integer | No | Pet ID to check if this pet has already completed or bookmarked the lesson |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lesson details retrieved successfully",
+    "data": {
+      "id": 1,
+      "category_id": 1,
+      "category": {
+        "id": 1,
+        "name": "Basic Commands",
+        "slug": "basic-commands",
+        "subtitle": "Foundational obedience skills",
+        "icon": "http://localhost:81/storage/training/icons/basic.png",
+        "order_column": 1
+      },
+      "title": "Teach \"Sit\" Command",
+      "slug": "teach-sit-command",
+      "tag": "TRAINING Short",
+      "species": "dog",
+      "difficulty": "beginner",
+      "duration_minutes": 10,
+      "duration_formatted": "10 min",
+      "impact": "Low impact",
+      "reward_tp": 2,
+      "reward_tp_formatted": "+2 TP",
+      "reward_xp": 20,
+      "summary": "A great confidence-builder for your pet.",
+      "description": "The foundational building block of all obedience. Teaches your pet to focus on handler cues.",
+      "thumbnail": null,
+      "video_url": null,
+      "is_plus_only": false,
+      "is_bookmarked": false,
+      "is_completed": true,
+      "completed_at": "2026-10-31T05:48:19.000000Z",
+      "steps": [
+        {
+          "id": 1,
+          "step_number": 1,
+          "title": "Get your pet's attention",
+          "instruction": "Hold a small, high-value treat right in front of your dog's nose so they focus entirely on you.",
+          "tip": "Use a quiet room with minimal distractions for initial repetitions.",
+          "image_url": null
+        },
+        {
+          "id": 2,
+          "step_number": 2,
+          "title": "Lure into sit position",
+          "instruction": "Slowly move your hand up and back over their head. As their nose tracks the treat upward, their bottom will naturally lower to the ground.",
+          "tip": "Keep the treat close to their nose—holding it too high may cause them to jump instead.",
+          "image_url": null
+        },
+        {
+          "id": 3,
+          "step_number": 3,
+          "title": "Mark and reward",
+          "instruction": "The exact second their bottom touches the floor, say \"Yes!\" enthusiastically and release the treat.",
+          "tip": "Repeat 5 to 8 times per session. End each session on a high note!",
+          "image_url": null
+        }
+      ]
+    }
+  }
+  ```
+
+  ### Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **404 Not Found:** Lesson with provided ID does not exist.
