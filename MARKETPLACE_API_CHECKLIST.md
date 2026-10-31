@@ -1,256 +1,210 @@
-# 📋 Rivo Marketplace & Vendor Portal: End-to-End API Testing Checklist
+# 📋 Rivo Mobile App: Today's Sprint API Testing Checklist (Figma Gap Completion)
 
-> **ব্যবহার নির্দেশিকা:** ব্রুনোতে প্রতিটি এপিআই টেস্ট করার সময় এই চেকলিস্টটি ব্যবহার করুন। প্রতিটি এপিআই টেস্ট সফল হলে চেকবক্স টিক `[x]` করতে পারেন। কোনো ফিল্ড বা লজিক রিফ্যাক্টরিং লাগলে সাথে সাথে উল্লেখ করবেন।
+> **তারিখ:** ৩১ অক্টোবর, ২০২৬  
+> **গিট ব্রাঞ্চ (Backend):** `feature/figma-gap-completion`  
+> **ব্রুনো কালেকশন (Bruno):** `main` ব্রাঞ্চ (`D:\Docker\GitHub\rivo\bruno-rivo-api\Rivo-api`)  
+> **ব্যবহার নির্দেশিকা:** ব্রুনোতে প্রতিটি এপিআই টেস্ট করার সময় এই চেকলিস্টটি ব্যবহার করুন। টেস্ট সফল হলে চেকবক্স টিক `[x]` করুন।
 
 ---
 
-## 🔑 গ্লোবাল ব্রুনো ভ্যারিয়েবলস ও হেডারস
+## 🔑 গ্লোবাল ব্রুনো ভ্যারিয়েবলস ও হেডারস (Global Variables & Headers)
 
 | হেডার / ভ্যারিয়েবল | মান (Value) | বিবরণ |
 | :--- | :--- | :--- |
-| `base_url` | `http://localhost:81/api` | ব্যাকএন্ড এপিআই বেস ইউআরএল |
+| `base_url` | `http://10.10.28.53:80/api` (বা `http://localhost:81/api`) | ব্যাকএন্ড এপিআই বেস ইউআরএল |
 | `Accept` | `application/json` | JSON রেসপন্স নিশ্চিত করার জন্য |
-| `Authorization` | `Bearer {{userToken}}` | কাস্টমার বা ভেন্ডরের Sanctum টোকেন |
+| `Authorization` | `Bearer {{userSarah}}` (বা `{{userToken}}`) | টেস্ট ইউজার সারা'র Sanctum অথ টোকেন |
+| `petId` | `1` | পেড্রো'র (Pedro) আইডি |
 
 ---
 
-## 🛍️ PART 1: Customer Marketplace Module (কাস্টমার ফ্লো)
+## 🐾 PART 1: Pet Training & Guided Tutorials (প্রশিক্ষণ মডিউল — ৭টি API)
 
-### 📍 ধাপ ১: ডিসকভারি, ক্যাটালগ ও সার্চ (Discovery & Search)
-- [x] **01. GET** `/api/v1/marketplace/home`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Get Marketplace Home.yml`
-  - **কাজ:** হোম ফিড লোড (ব্যানার, ক্যাটাগরি, টপ ডিল, রেকমেন্ডেড ও স্টোর)
+Figma স্ক্রিন: `train_tutorial_screens.png` (Training Academy, ক্যাটালগ ও স্টেপ-বাই-স্টেপ গাইডেন্স)
+
+- [ ] **01. GET** `/api/v1/training/home/:pet`
+  - **ব্রুনো ফাইল:** `Pet Training/Get Training Home.yml`
+  - **কাজ:** পেটের বর্তমান ট্রেইনিং লেভেল, স্ট্রিক, Gold III র‍্যাঙ্ক, TP প্রগ্রেস এবং প্রস্তাবিত লেসন দেখা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **02. GET** `/api/v1/marketplace/categories`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Get Categories List.yml`
-  - **কাজ:** সব সক্রিয় ক্যাটাগরি, আইকন এবং প্রতিটিতে কয়টি প্রোডাক্ট আছে তার কাউন্ট
+
+- [ ] **02. GET** `/api/v1/training/categories`
+  - **ব্রুনো ফাইল:** `Pet Training/Get Categories.yml`
+  - **কাজ:** ট্রেইনিং ক্যাটালগ ক্যাটাগরি তালিকা (Basic Commands, Leash Walking, Fun Tricks, Behavior & Barking) এবং সক্রিয় লেসন কাউন্ট দেখা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **03. GET** `/api/v1/marketplace/categories/:category/products`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Get Products by Category.yml`
-  - **কাজ:** স্পেসিফিক ক্যাটাগরি (যেমন: `food` বা `treats`)-র সব প্রোডাক্ট দেখা
+
+- [ ] **03. GET** `/api/v1/training/lessons`
+  - **ব্রুনো ফাইল:** `Pet Training/List Lessons.yml`
+  - **প্যারামিটার (ঐচ্ছিক):** `filter[category_id]`, `filter[difficulty]` (`beginner`, `intermediate`, `advanced`), `filter[is_plus_only]`, `sort=order_column`
+  - **কাজ:** লেসন ফিল্টারিং ও ব্রাউজিং।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **04. GET** `/api/v1/marketplace/stores`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Browse Nearby Stores.yml`
-  - **কাজ:** আশেপাশের সব লাইভ পেট শপ ও ভেন্ডর স্টোর ব্রাউজ করা
+
+- [ ] **04. GET** `/api/v1/training/lessons/:lesson`
+  - **ব্রুনো ফাইল:** `Pet Training/Get Lesson Step-by-Step.yml`
+  - **কাজ:** লেসনের ধাপে ধাপে নির্দেশিকা, টেক্সট নির্দেশনা, স্টেপ ইমেজ ও অডিও কিউ (যেমন: ক্লিকার বা কমান্ড প্রম্পট)।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **05. GET** `/api/v1/marketplace/stores/:store`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Get Store Profile & Products.yml`
-  - **কাজ:** নির্দিষ্ট স্টোর প্রোফাইল, ডেলিভারি ফি, রেটিং এবং স্টোরের প্রোডাক্ট তালিকা
+
+- [ ] **05. POST** `/api/v1/training/pets/:pet/lessons/:lesson/complete`
+  - **ব্রুনো ফাইল:** `Pet Training/Complete Lesson.yml`
+  - **বডি (JSON):**
+    ```json
+    {
+      "rating": 5,
+      "notes": "Pedro learned sit command in 10 minutes!"
+    }
+    ```
+  - **কাজ:** লেসন সম্পন্ন করা, পেটের ট্রেনিং স্ট্যাটাস আপডেট, TP/XP রিওয়ার্ড যোগ এবং দৈনিক ট্রেনিং স্ট্রিক বৃদ্ধি করা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **06. GET** `/api/v1/marketplace/products`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Browse Products Catalog.yml`
-  - **কাজ:** অল প্রোডাক্টস ক্যাটালগ ব্রাউজ (ফিল্টার: `pet_type`, `price`, `sort`)
+
+- [ ] **06. POST** `/api/v1/training/pets/:pet/lessons/:lesson/bookmark`
+  - **ব্রুনো ফাইল:** `Pet Training/Toggle Lesson Bookmark.yml`
+  - **কাজ:** পছন্দের লেসন বুকমার্ক করা বা বুকমার্ক তুলে নেওয়া (টগল)।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **07. GET** `/api/v1/marketplace/products/:product`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Get Product Details.yml`
-  - **কাজ:** প্রোডাক্ট পেজ (ছবি, ডেসক্রিপশন, ভ্যারিয়েন্ট, ইনভেন্টরি স্টক ও রিভিউ সামারি)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **08. GET** `/api/v1/marketplace/search`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Unified Search.yml`
-  - **কাজ:** ইউনিফাইড সার্চ বার (একসাথে Products এবং Stores ট্যাব)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **09. DELETE** `/api/v1/marketplace/search/recent`
-  - **ব্রুনো ফাইল:** `Marketplace/Catalog/Clear Recent Searches.yml`
-  - **কাজ:** কাস্টমারের রিসেন্ট সার্চ কি-ওয়ার্ড হিস্ট্রি এক ক্লিকে মুছে ফেলা
+
+- [ ] **07. GET** `/api/v1/training/pets/:pet/bookmarks`
+  - **ব্রুনো ফাইল:** `Pet Training/Get Bookmarked Lessons.yml`
+  - **কাজ:** বুকমার্ক করা সকল লেসনের তালিকা দেখা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
 
 ---
 
-### 📍 ধাপ ২: ডেলিভারি অ্যাড্রেস বুক (Delivery Address Management)
-- [x] **10. GET** `/api/v1/marketplace/addresses`
-  - **ব্রুনো ফাইল:** `Marketplace/Addresses/Get Saved Addresses.yml`
-  - **কাজ:** কাস্টমারের সেভ করা সব ডেলিভারি অ্যাড্রেসের তালিকা
+## ⚡ PART 2: Pet Activity Dashboard & Multi-Streak Engine (অ্যাক্টিভিটি ও স্ট্রিক — ৩টি API)
+
+Figma স্ক্রিন: `activity_dashboard_screen.png` ও `streaks_modals_detail.png`
+
+- [ ] **08. GET** `/api/v1/pets/:pet/activity-dashboard`
+  - **ব্রুনো ফাইল:** `Pet Activity/Get Pet Activity Dashboard.yml`
+  - **কাজ:** 
+    - লেভেল কার্ড: `Level 3` (XP প্রগ্রেস বার ও "70 XP to Level 4")
+    - র‍্যাঙ্ক কার্ড: `Gold III` (৭০০/৭৭০ TP ও "70 to Gold II")
+    - ৩টি মেট্রিক কার্ড: Walk Activity (`12.4 km`), Training (`3 sessions`), Care (`32 tasks`)
+    - আজকের টাইমলাইন: কেয়ার টাস্ক, ওয়াক ও ট্রেনিং সেশনের ক্রোনোলজিক্যাল ইউনিফাইড ফিড ("Just now", "2 hours ago")
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **11. POST** `/api/v1/marketplace/addresses`
-  - **ব্রুনো ফাইল:** `Marketplace/Addresses/Save Delivery Address.yml`
-  - **কাজ:** নতুন ডেলিভারি অ্যাড্রেস সেভ করা (House no, Street, Landmark, Lat/Lng)
+
+- [ ] **09. GET** `/api/v1/pets/:pet/streaks`
+  - **ব্রুনো ফাইল:** `Pet Activity/Get Pet Streaks.yml`
+  - **কাজ:** ৩টি ভিন্ন স্ট্রিক (Walk Streak, Training Streak, Care Streak) এবং প্রতিটি স্ট্রিকের জন্য রবিবার-শনিবার ৭ দিনের ডট ইন্ডিকেটর (`[S, M, T, W, T, F, S]`)।
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+- [ ] **10. GET** `/api/v1/pets/:pet/streaks/:type`
+  - **ব্রুনো ফাইল:** `Pet Activity/Get Single Streak.yml`
+  - **পাথ ভ্যালু:** `walk`, `training`, অথবা `care`
+  - **কাজ:** নির্দিষ্ট একটি স্ট্রিকের বিস্তারিত মডাল পপআপ ডেটা।
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+---
+
+## 🚨 PART 3: 24/7 Emergency Locator & SOS Mode (জরুরি সেবা ও ক্লিনিক লোকেটর — ৩টি API)
+
+Figma স্ক্রিন: `emergency_mode_screen.png`, `emergency_contacts_screen.png`, `emergency_main_screen.png`
+
+- [ ] **11. GET** `/api/v1/emergency/mode`
+  - **ব্রুনো ফাইল:** `Emergency Vet/Get Emergency Mode Guidance.yml`
+  - **কাজ:** 
+    - রেড অ্যালার্ট ৫টি লাইফ-সেভিং ফার্স্ট-এইড স্টেপ (Stay calm, No human meds, Clear airway, Pressure on wounds, Careful transport)
+    - ইউজারের প্রাইমারি ও সেকেন্ডারি বিশ্বস্ত ভেট ডাক্তারের কুইক-ডায়াল ফোন নম্বর
+    - মেডিক্যাল ডিসক্লেইমার ব্যানার
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+- [ ] **12. GET** `/api/v1/emergency/clinics`
+  - **ব্রুনো ফাইল:** `Emergency Vet/Locate Nearby 24-7 Clinics.yml`
+  - **কুয়েরি প্যারামিটার:**
+    - `latitude=37.7749&longitude=-122.4194&radius_km=30`
+    - `filter[is_open_24_7]=1`
+    - `filter[search]=Metropolitan` (ঐচ্ছিক সার্চ)
+  - **কাজ:** Haversine স্পেয়ারিকাল জিও-ক্যালকুলেশন দিয়ে সবচেয়ে কাছের ২৪/৭ জরুরি পশু হাসপাতালগুলো ক্রমানুসারে দেখা, গুগল ম্যাপস ডিরেকশন লিংক ও স্পেশালাইজড সার্ভিসেস (`ICU`, `Emergency Surgery`, `Blood Bank`, `CT Scan`)।
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+- [ ] **13. GET** `/api/v1/emergency/clinics/:clinic`
+  - **ব্রুনো ফাইল:** `Emergency Vet/Get Clinic Details.yml`
+  - **কাজ:** ক্লিনিকের ফুল প্রোফাইল, ডাক্তারদের টিম, হটলাইন এবং জরুরি সেবা সংক্রান্ত বিস্তারিত।
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+---
+
+## 💉 PART 4: Dedicated Pet Vaccination Records (ভ্যাক্সিনেশন ট্র্যাকিং — ৬টি API)
+
+Figma স্ক্রিন: `health_care_screens.png` (ভ্যাকসিনেশন রেকর্ড, স্ট্যাটাস ব্যাজ ও সার্টিফিকেট)
+
+- [ ] **14. GET** `/api/v1/pets/:pet/vaccinations`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Get Pet Vaccinations.yml`
+  - **কুয়েরি প্যারামিটার (ঐচ্ছিক):**
+    - `filter[status]=up_to_date` (বা `due_soon`, `overdue`)
+    - `filter[vaccine_type]=core` (বা `non_core`, `lifestyle`)
+    - `sort=due_at`
+  - **কাজ:** পেটের সব টিকার তালিকা, রিয়েল-টাইম গণনা করা ব্যাজ (`Up to Date` Green, `Due Soon` Orange, `Overdue` Red) এবং সার্টিফিকেট ফাইল ইউআরএল।
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+- [ ] **15. GET** `/api/v1/pets/:pet/vaccinations/summary`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Get Vaccination Summary.yml`
+  - **কাজ:** 
+    - টপ ড্যাশবোর্ড কার্ড: মোট ভ্যাকসিন সংখ্যা, আপ-টু-ডেট সংখ্যা, ডিউ সুন সংখ্যা, ওভারডিউ সংখ্যা
+    - ওভারঅল ব্যাজ (`1 Vaccine Overdue` বা `All Up to Date`)
+    - পরবর্তী ডিউ ভ্যাকসিনের কাউন্টডাউন ("Due in 18 days")
+  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+
+- [ ] **16. POST** `/api/v1/pets/:pet/vaccinations`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Record Pet Vaccination.yml`
+  - **বডি (Multipart Form-Data):**
+    - `name`: `Canine Influenza (H3N2/H3N8)`
+    - `vaccine_type`: `non_core`
+    - `administered_at`: `2026-10-31`
+    - `due_at`: `2027-10-31`
+    - `clinic_name`: `Downtown Animal Medical Center`
+    - `veterinarian_name`: `Dr. Sarah Chen, DACVIM`
+    - `batch_number`: `FLU-8820-K`
+    - `notes`: `Bivalent canine influenza vaccine administered.`
+    - `certificate`: *(ঐচ্ছিক ফাইল: PDF, JPG, PNG)*
+  - **কাজ:** নতুন ভ্যাক্সিন রেকর্ড সেভ করা, SmartUpload দিয়ে ফাইল সংরক্ষণ এবং পেটের `is_vaccinated` স্ট্যাটাস অটো-সিঙ্ক।
   - **প্রত্যাশিত স্ট্যাটাস:** `201 Created`
-- [x] **12. PUT** `/api/v1/marketplace/addresses/:address`
-  - **ব্রুনো ফাইল:** `Marketplace/Addresses/Update Delivery Address.yml`
-  - **কাজ:** আগের সেভ করা অ্যাড্রেস এডিট / আপডেট করা
+
+- [ ] **17. GET** `/api/v1/pets/:pet/vaccinations/:vaccination`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Get Vaccination Details.yml`
+  - **কাজ:** নির্দিষ্ট একটি ভ্যাকসিনের ফুল ডিটেইলস, লট নাম্বার ও সার্টিফিকেট ডাউনলোড লিংক দেখা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **13. PATCH** `/api/v1/marketplace/addresses/:address/default`
-  - **ব্রুনো ফাইল:** `Marketplace/Addresses/Set Default Address.yml`
-  - **কাজ:** যেকোনো একটি অ্যাড্রেসকে প্রাইমারি/ডিফল্ট অ্যাড্রেস হিসেবে সেট করা
+
+- [ ] **18. POST (or PUT)** `/api/v1/pets/:pet/vaccinations/:vaccination`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Update Pet Vaccination.yml`
+  - **বডি (Multipart Form-Data):** নাম, নোটস বা রিপ্লেসমেন্ট সার্টিফিকেট ফাইল
+  - **কাজ:** ভ্যাকসিনের তথ্য আপডেট করা। নতুন সার্টিফিকেট দিলে পুরনো ফাইলটি ডিস্ক থেকে স্বয়ংক্রিয়ভাবে মুছে যাবে (`HasUploadPurge`)।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **14. DELETE** `/api/v1/marketplace/addresses/:address`
-  - **ব্রুনো ফাইল:** `Marketplace/Addresses/Delete Address.yml`
-  - **কাজ:** অ্যাড্রেস মুছে ফেলা
+
+- [ ] **19. DELETE** `/api/v1/pets/:pet/vaccinations/:vaccination`
+  - **ব্রুনো ফাইল:** `Pet Vaccinations/Delete Pet Vaccination.yml`
+  - **কাজ:** ভ্যাক্সিনেশন রেকর্ড মুছে ফেলা এবং স্টোরেজ ডিস্ক থেকে সার্টিফিকেট পার্জ করা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
 
 ---
 
-### 📍 ধাপ ৩: শপিং কার্ট (Shopping Cart)
-- [x] **15. GET** `/api/v1/marketplace/cart`
-  - **ব্রুনো ফাইল:** `Marketplace/Cart/Get Cart.yml`
-  - **কাজ:** সক্রিয় কার্ট দেখা (আইটেমস, সাবটোটাল, ট্যাক্স ও Rivo Pro $0 ডেলিভারি ডিসকাউন্ট)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **16. POST** `/api/v1/marketplace/cart/items`
-  - **ব্রুনো ফাইল:** `Marketplace/Cart/Add Item to Cart.yml`
-  - **কাজ:** কার্টে প্রোডাক্ট বা নির্দিষ্ট ভ্যারিয়েন্ট যোগ করা (অটো সিঙ্গেল-স্টোর এনফোর্সমেন্ট)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **17. PATCH** `/api/v1/marketplace/cart/items/:id`
-  - **ব্রুনো ফাইল:** `Marketplace/Cart/Update Cart Item Quantity.yml`
-  - **কাজ:** কার্টের কোনো আইটেমের পরিমাণ বাড়ানো বা কমানো (+ / -)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **18. DELETE** `/api/v1/marketplace/cart/items/:id`
-  - **ব্রুনো ফাইল:** `Marketplace/Cart/Remove Item from Cart.yml`
-  - **কাজ:** কার্ট থেকে নির্দিষ্ট একটি আইটেম সরিয়ে ফেলা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **19. DELETE** `/api/v1/marketplace/cart`
-  - **ব্রুনো ফাইল:** `Marketplace/Cart/Clear Entire Cart.yml`
-  - **কাজ:** পুরো কার্ট এক ক্লিকে খালি করা
+## 🏥 PART 5: Health Vault Dashboard Integration (ইন্টিগ্রেশন চেক — ১টি API)
+
+- [ ] **20. GET** `/api/v1/pets/:pet/health-vault/dashboard`
+  - **ব্রুনো ফাইল:** `Health Vault/Get Dashboard.yml`
+  - **কাজ:** হেলথ ভল্ট ড্যাশবোর্ডে নতুন ভ্যাক্সিনেশন সিস্টেম ইন্টিগ্রেট হয়েছে কি না যাচাই করা।
+    - ১০০-পয়েন্টের হেলথ স্কোর ক্যালকুলেশনে ভ্যাক্সিনের ২০ পয়েন্ট সক্রিয় কি না দেখা (কোন ভ্যাকসিন ওভারডিউ থাকলে স্কোর কমবে)।
+    - `vaccinations.upcoming_list` এবং `overall_badge` সঠিকভাবে আসছে কি না দেখা।
   - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
 
 ---
 
-### 📍 ধাপ ৪: চেকআউট ও পেমেন্ট ইঞ্জিন (Checkout & Payments)
-- [x] **20. POST** `/api/v1/marketplace/checkout`
-  - **ব্রুনো ফাইল:** `Marketplace/Orders/Process Checkout.yml`
-  - **কাজ:** অর্ডার প্লেস করা এবং ডিকাপলড গেটওয়ে (Stripe PaymentIntent বা COD) ইনিশিয়েট
-  - **পেমেন্ট অপশনস:** `stripe`, `apple_pay`, `mastercard`, `visa`, `cash_on_delivery`
-  - **প্রত্যাশিত স্ট্যাটাস:** `201 Created`
-- [x] **21. POST** `/api/v1/marketplace/orders/:order/confirm-payment`
-  - **ব্রুনো ফাইল:** `Marketplace/Orders/Confirm Order Payment.yml`
-  - **কাজ:** ক্লায়েন্ট সাইড 3D Secure / Stripe Sheet পেমেন্ট যাচাই করে অর্ডারকে `paid` মার্ক করা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **22. GET** `/api/v1/marketplace/orders`
-  - **ব্রুনো ফাইল:** `Marketplace/Orders/Get My Orders (Tabs).yml`
-  - **কাজ:** কাস্টমারের অর্ডার তালিকা (ট্যাব ফিল্টার: `ongoing`, `completed`, `cancelled`)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **23. GET** `/api/v1/marketplace/orders/:order`
-  - **ব্রুনো ফাইল:** `Marketplace/Orders/Get Order Details & Tracking.yml`
-  - **কাজ:** অর্ডারের রসিদ, লাইভ স্ট্যাটাস ট্র্যাকার ও আইটেম স্ন্যাপশট দেখা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **24. POST** `/api/v1/marketplace/orders/:order/cancel`
-  - **ব্রুনো ফাইল:** `Marketplace/Orders/Cancel Order.yml`
-  - **কাজ:** শিপমেন্টের আগে অর্ডার বাতিল করা (ইনভেন্টরি স্টক অটো-রিস্টোর ও গেটওয়ে রিফান্ড)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
+## 🧪 টেস্ট কভারেজ ও সিস্টেম স্ট্যাটাস
+
+| ফিচার টেস্ট ফাইল | টেস্ট সংখ্যা | Assertions | স্ট্যাটাস |
+| :--- | :--- | :--- | :--- |
+| `tests/Feature/PetTrainingTest.php` | ৬টি টেস্ট | ৪৬টি | 🟢 **PASS (100%)** |
+| `tests/Feature/PetActivityTest.php` | ৫টি টেস্ট | ১৪টি | 🟢 **PASS (100%)** |
+| `tests/Feature/EmergencyClinicTest.php` | ৫টি টেস্ট | ৪৬টি | 🟢 **PASS (100%)** |
+| `tests/Feature/PetVaccinationTest.php` | ৮টি টেস্ট | ৯০টি | 🟢 **PASS (100%)** |
+| **সর্বমোট আজকের টেস্ট** | **২৪টি টেস্ট** | **১৯৬টি assertions** | 🟢 **সবগুলো সফল** |
 
 ---
 
-### 📍 ধাপ ৫: কাস্টমার রিভিউ ও রেটিং (Reviews & Ratings)
-- [x] **25. POST** `/api/v1/marketplace/reviews`
-  - **ব্রুনো ফাইল:** `Marketplace/Reviews/Submit Product or Store Review.yml`
-  - **কাজ:** কেনা প্রোডাক্ট বা স্টোরের ওপর রেটিং (১-৫ স্টার) ও রিভিউ পোস্ট করা
-  - **প্রত্যাশিত স্ট্যাটাস:** `201 Created`
-- [x] **26. GET** `/api/v1/marketplace/products/:product/reviews`
-  - **ব্রুনো ফাইল:** `Marketplace/Reviews/Get Product Reviews & Breakdown.yml`
-  - **কাজ:** প্রোডাক্টের সব রিভিউ এবং স্টার ব্রেকডাউন (5★, 4★, 3★ ...) দেখা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **27. GET** `/api/v1/marketplace/stores/:store/reviews`
-  - **ব্রুনো ফাইল:** `Marketplace/Reviews/Get Store Reviews & Breakdown.yml`
-  - **কাজ:** স্টোরের সব রিভিউ ও রেটিং পরিসংখ্যান দেখা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
-
-- [x] **27.1 POST/PUT** `/api/v1/marketplace/reviews/:review` *(Bonus)*
-  - **ব্রুনো ফাইল:** `Marketplace/Reviews/Update Review.yml`
-  - **কাজ:** কাস্টমারের রিভিউ এডিট করা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **27.2 DELETE** `/api/v1/marketplace/reviews/:review` *(Bonus)*
-  - **ব্রুনো ফাইল:** `Marketplace/Reviews/Delete Review.yml`
-  - **কাজ:** কাস্টমার রিভিউ পার্মানেন্ট ডিলিট করা (ছবি ডিস্ক থেকে মুছে ফেলা, রেটিং রিক্যালকুলেশন ও ক্যাশ ফ্লাশ)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
----
-
-## 🏪 PART 2: Vendor Portal Module (ভেন্ডর ফ্লো)
-
-### 📍 ধাপ ৬: স্টোর অনবোর্ডিং, প্রোফাইল ও KYC (Store Profile & KYC)
-- [x] **28. POST** `/api/v1/vendor/store`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Store Profile & KYC/Onboard Store Profile.yml`
-  - **কাজ:** ভেন্ডর স্টোর রেজিস্ট্রেশন ও অনবোর্ডিং উইজার্ড (Store name, type, phone, address, delivery fee, logo, banner, KYC docs)। নিরাপদ আপসার্ট সমর্থন করে (নতুন স্টোরের ক্ষেত্রে 201 Created, আর অনবোর্ডিং পুনরায় সাবমিট করলে রেটিং/স্লাগ না মুছে 200 OK)।
-  - **রেসপন্স রিসোর্স:** `VendorStoreProfileResource`
-  - **প্রত্যাশিত স্ট্যাটাস:** `201 Created` / `200 OK`
-- [x] **29. GET** `/api/v1/vendor/profile`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Store Profile & KYC/Get Store Profile.yml`
-  - **কাজ:** স্টোরের বিজনেস প্রোফাইল, অ্যাসেট ইউআরএল (WebP logo, banner), ভেরিফিকেশন ব্যাজ ও KYC ডকুমেন্ট হিস্ট্রি দেখা।
-  - **রেসপন্স রিসোর্স:** `VendorStoreProfileResource`
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **30. POST** `/api/v1/vendor/profile`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Store Profile & KYC/Update Store Profile.yml`
-  - **কাজ:** স্টোরের প্রোফাইল সেটিংস আপডেট (নাম, টাইপ, ফোন, লোকেশন, ডেলিভারি ফি, ডেলিভারি টাইম, লাইভ স্ট্যাটাস `is_live`, লোগো ও ব্যানার)। পুরনো ছবি ডিস্ক থেকে ডিলিট করে নতুন WebP ছবি সেট করে এবং Redis ক্যাশ ট্যাগ ফ্ল্যাশ করে।
-  - **রেসপন্স রিসোর্স:** `VendorStoreProfileResource`
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **31. POST** `/api/v1/vendor/documents`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Store Profile & KYC/Upload KYC Document.yml`
-  - **কাজ:** KYC ডকুমেন্ট আপলোড (`UploadStoreDocumentRequest` দিয়ে ভ্যালিডেট করে `StoreService` এ সেভ হয় এবং Redis ক্যাশ ফ্ল্যাশ করে)।
-  - **রেসপন্স রিসোর্স:** `StoreDocumentResource`
-  - **প্রত্যাশিত স্ট্যাটাস:** `201 Created`
-- [x] **32. DELETE** `/api/v1/vendor/documents/:document`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Store Profile & KYC/Delete KYC Document.yml`
-  - **কাজ:** বাতিল বা ভুল KYC ডকুমেন্ট ডিলিট করা (`StoreService` দিয়ে ডাটাবেজ এবং স্টোরেজ ডিস্ক থেকে ফিজিক্যাল ফাইল রিমুভ করে ক্যাশ ফ্ল্যাশ করে)।
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
----
-
-### 📍 ধাপ ৭: ভেন্ডর ড্যাশবোর্ড ও অ্যানালিটিক্স (Dashboard & Analytics)
-- [x] **33. GET** `/api/v1/vendor/dashboard`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Dashboard & Analytics/Get Vendor Dashboard.yml`
-  - **কাজ:** ভেন্ডর ড্যাশবোর্ড মেট্রিক্স (টাইম-অ্যাওয়ার গ্রিটিংস, স্টোর প্রোফাইল, অর্ডার কাউন্টারস [New, Preparing, Ready, Done], আজকের রেভিনিউ, ৭-দিনের উইকলি সেলস চার্ট, স্টোর পারফরম্যান্স [রেটিং, সাকসেস রেট %, অ্যাভারেজ টাইম], লো-স্টক অ্যালার্ট এবং সাম্প্রতিক অর্ডার্স)। অ্যাডভান্সড ক্যাশ ট্রেইট দিয়ে এটমিক লক ও টেন্যান্ট-আইসোলেটেড ক্যাশিং দ্বারা অপ্টিমাইজড।
-  - **রেসপন্স রিসোর্স:** `VendorDashboardResource`
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **34. GET** `/api/v1/vendor/analytics`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Dashboard & Analytics/Get Sales Analytics.yml`
-  - **কাজ:** সেলস গ্রাফ অ্যানালিটিক্স (টাইমলাইন: week, month, year)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
----
-
-### 📍 ধাপ ৮: প্রোডাক্ট ক্যাটালগ ও ইনভেন্টরি ম্যানেজমেন্ট (Products & Inventory)
-- [x] **35. GET** `/api/v1/vendor/products`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Get Store Products Catalog.yml`
-  - **কাজ:** ভেন্ডরের নিজস্ব সব প্রোডাক্টের তালিকা (ইনভেন্টরি স্টক ও স্ট্যাটাস সহ)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **36. POST** `/api/v1/vendor/products`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Add Product (4-Step Wizard).yml`
-  - **কাজ:** নতুন প্রোডাক্ট আপলোড (৪-স্টেপ উইজার্ড: বেসিক ইনফো, প্রাইসিং, ভ্যারিয়েন্টস ও ছবি)
-  - **প্রত্যাশিত স্ট্যাটাস:** `201 Created`
-- [x] **37. GET** `/api/v1/vendor/products/:product`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Get Product Details.yml`
-  - **কাজ:** নির্দিষ্ট প্রোডাক্টের বিস্তারিত ভেন্ডর ভিউ ও ভ্যারিয়েন্ট স্টক দেখা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **38. POST** `/api/v1/vendor/products/:product`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Update Product.yml`
-  - **কাজ:** প্রোডাক্টের নাম, মূল্য, ছবি ও ভ্যারিয়েন্ট আপডেট করা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **39. PATCH** `/api/v1/vendor/products/:product/stock`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Update Product Stock (Stepper).yml`
-  - **কাজ:** দ্রুত প্রোডাক্ট বা ভ্যারিয়েন্টের স্টক সংখ্যা বাড়ানো বা কমানো
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **40. PATCH** `/api/v1/vendor/products/:product/toggle-active`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Toggle Product Listing Status.yml`
-  - **কাজ:** প্রোডাক্ট সাময়িকভাবে মার্কেটপ্লেসে হাইড (Paused) বা অ্যাক্টিভ (Live) করা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **41. DELETE** `/api/v1/vendor/products/:product`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Products & Inventory/Delete Product.yml`
-  - **কাজ:** প্রোডাক্ট ক্যাটালগ থেকে মুছে ফেলা (Soft delete)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
----
-
-### 📍 ধাপ ৯: ভেন্ডর অর্ডার কিউ ও ফুলফিলমেন্ট স্টেপার (Orders & Fulfillment)
-- [x] **42. GET** `/api/v1/vendor/orders`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Orders & Fulfillment/Get Store Orders Queue.yml`
-  - **কাজ:** ইনকামিং সব অর্ডারের কিউ (ট্যাব: `new`, `preparing`, `delivered`, `cancelled`)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **43. GET** `/api/v1/vendor/orders/:order`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Orders & Fulfillment/Get Order Details.yml`
-  - **কাজ:** নির্দিষ্ট অর্ডারের কাস্টমার ইনফো, ডেলিভারি ঠিকানা ও আইটেমস দেখা
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **44. POST** `/api/v1/vendor/orders/:order/accept`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Orders & Fulfillment/Accept Order.yml`
-  - **কাজ:** নতুন অর্ডার এক্সেপ্ট করা (স্ট্যাটাস সরাসরি `preparing`-এ স্থানান্তরিত হয়)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **45. PATCH** `/api/v1/vendor/orders/:order/status`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Orders & Fulfillment/Update Fulfillment Stepper Status.yml`
-  - **কাজ:** ফুলফিলমেন্ট স্টেপার আপডেট (`ready_for_pickup` ➔ `out_for_delivery` ➔ `delivered`)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-- [x] **46. POST** `/api/v1/vendor/orders/:order/reject`
-  - **ব্রুনো ফাইল:** `Vendor Portal/Orders & Fulfillment/Reject Order.yml`
-  - **কাজ:** অর্ডার রিজেক্ট করা (অটো-স্টক রিস্টোর ও স্বয়ংক্রিয় গেটওয়ে রিফান্ড)
-  - **প্রত্যাশিত স্ট্যাটাস:** `200 OK`
-
----
-> *Generated by Antigravity IDE for Rivo App Testing & Quality Assurance.*
+### 💡 টেস্টিং টিপস:
+1. টেস্ট ডাটা হিসেবে ডাটাবেজে **Pedro** (`pet_id = 1`) এবং ইউজার হিসেবে **Sarah** (`Bearer {{userSarah}}`) সিড করা আছে।
+2. যদি ডাটা রিসেট বা রিসিড করতে চান, ডকারে রান করুন:
+   ```bash
+   docker exec rivo-app php artisan db:seed --class=TrainingSeeder
+   docker exec rivo-app php artisan db:seed --class=ActivityAndStreakSeeder
+   docker exec rivo-app php artisan db:seed --class=EmergencyClinicSeeder
+   docker exec rivo-app php artisan db:seed --class=VaccinationSeeder
+   ```
+3. ব্রুনোর প্রতিটি রিকোয়েস্টে অলরেডি প্রয়োজনীয় প্যারামিটার ও ডকুমেন্টেশন যুক্ত করা আছে।
