@@ -1,0 +1,130 @@
+info:
+  name: Get All Pet Streaks
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/pets/1/streaks"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get All Pet Streaks API
+
+  Retrieves the complete streak status across all 3 key activities (**Training**, **Walk**, and **Care**) along with 7-day visual consistency trackers, perfectly matching Figma's Homepage Streak Modals (`homepage_cluster.png`).
+
+  ## Figma Screens
+  - **Screen:** `Homepage` -> Streak Details Modals
+  - **Modals:**
+    1. **Training Streak Modal:**
+       - Current Streak: `3 days` (star icon)
+       - Best Streak: `9 days` (trophy icon)
+       - Last completed date: `Jul 21` / `Oct 31`
+       - Last 7 Days Tracker: `[M, T, W, T, F, S, S]` with completion status
+       - Status Message: `Completed today - streak continues!`
+    2. **Walk Streak Modal:**
+       - Current Streak: `5 days` (flame icon)
+       - Best Streak: `14 days` (trophy icon)
+       - Last 7 Days Tracker
+       - Status Message: `Completed today - streak continues!`
+    3. **Care Streak Modal:**
+       - Current Streak: `7 days` (heart icon)
+       - Best Streak: `21 days` (trophy icon)
+       - Last 7 Days Tracker
+       - Status Message: `Completed today - streak continues!`
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/pets/:petId/streaks`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Active pet ID (e.g. `1` for Pedro) |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Pet streaks retrieved successfully",
+    "data": {
+      "pet_id": 1,
+      "training_streak": {
+        "type": "training",
+        "title": "Training Streak",
+        "subtitle": "Consistency tracker",
+        "current_days": 3,
+        "best_days": 9,
+        "last_completed_date": "Oct 31",
+        "is_completed_today": true,
+        "status_message": "Completed today - streak continues!",
+        "last_7_days": [
+          {"day": "S", "day_name": "Sun", "date": "2026-10-25", "is_today": false, "is_completed": false},
+          {"day": "M", "day_name": "Mon", "date": "2026-10-26", "is_today": false, "is_completed": false},
+          {"day": "T", "day_name": "Tue", "date": "2026-10-27", "is_today": false, "is_completed": false},
+          {"day": "W", "day_name": "Wed", "date": "2026-10-28", "is_today": false, "is_completed": false},
+          {"day": "T", "day_name": "Thu", "date": "2026-10-29", "is_today": false, "is_completed": true},
+          {"day": "F", "day_name": "Fri", "date": "2026-10-30", "is_today": false, "is_completed": true},
+          {"day": "S", "day_name": "Sat", "date": "2026-10-31", "is_today": true, "is_completed": true}
+        ],
+        "icon": "star_teal"
+      },
+      "walk_streak": {
+        "type": "walk",
+        "title": "Walk Streak",
+        "subtitle": "Consistency tracker",
+        "current_days": 5,
+        "best_days": 14,
+        "last_completed_date": "Oct 31",
+        "is_completed_today": true,
+        "status_message": "Completed today - streak continues!",
+        "last_7_days": [
+          {"day": "S", "day_name": "Sun", "date": "2026-10-25", "is_today": false, "is_completed": false},
+          {"day": "M", "day_name": "Mon", "date": "2026-10-26", "is_today": false, "is_completed": false},
+          {"day": "T", "day_name": "Tue", "date": "2026-10-27", "is_today": false, "is_completed": false},
+          {"day": "W", "day_name": "Wed", "date": "2026-10-28", "is_today": false, "is_completed": true},
+          {"day": "T", "day_name": "Thu", "date": "2026-10-29", "is_today": false, "is_completed": true},
+          {"day": "F", "day_name": "Fri", "date": "2026-10-30", "is_today": false, "is_completed": true},
+          {"day": "S", "day_name": "Sat", "date": "2026-10-31", "is_today": true, "is_completed": true}
+        ],
+        "icon": "flame_orange"
+      },
+      "care_streak": {
+        "type": "care",
+        "title": "Care Streak",
+        "subtitle": "Consistency tracker",
+        "current_days": 7,
+        "best_days": 21,
+        "last_completed_date": "Oct 31",
+        "is_completed_today": true,
+        "status_message": "Completed today - streak continues!",
+        "last_7_days": [
+          {"day": "S", "day_name": "Sun", "date": "2026-10-25", "is_today": false, "is_completed": true},
+          {"day": "M", "day_name": "Mon", "date": "2026-10-26", "is_today": false, "is_completed": true},
+          {"day": "T", "day_name": "Tue", "date": "2026-10-27", "is_today": false, "is_completed": true},
+          {"day": "W", "day_name": "Wed", "date": "2026-10-28", "is_today": false, "is_completed": true},
+          {"day": "T", "day_name": "Thu", "date": "2026-10-29", "is_today": false, "is_completed": true},
+          {"day": "F", "day_name": "Fri", "date": "2026-10-30", "is_today": false, "is_completed": true},
+          {"day": "S", "day_name": "Sat", "date": "2026-10-31", "is_today": true, "is_completed": true}
+        ],
+        "icon": "heart_green"
+      }
+    }
+  }
+  ```
+
+  ---
+
+  ## Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Pet belongs to another user.

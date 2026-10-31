@@ -1,0 +1,166 @@
+info:
+  name: Get Pet Activity Dashboard
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/pets/1/activity-dashboard"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Pet Activity Dashboard API
+
+  Retrieves the unified **Activity & Gamification Dashboard** for the active pet, perfectly matching Figma Screen 5 (`Activity`). Powered by `PetActivityService` and `thekaziomar/laravel-atomic-cache` (v1.5.0).
+
+  ## Figma Screen
+  - **Screen:** `Activity` (Figma Frame: Marketplace / Activity Cluster)
+  - **UI Elements:**
+    - **Pet Level Card:** Displays current pet level (e.g. `Level 3`), teal hexagonal badge, total XP, and progress bar with next milestone target (`70 to Level 4`).
+    - **Rank Card:** Current rank tier (e.g. `Rank Gold III`), golden trophy badge, Training Points progress bar (`70 to Gold II | 700/770 TP`).
+    - **3 Metric Summary Cards:**
+      - 🐾 **Walk Activity:** Total distance this week (e.g. `12.4 km`), count subtitle (`4 walks this week`).
+      - 📘 **Training Lessons:** Completed training sessions count (e.g. `3 sessions`), TP gained subtitle (`+120 TP gained`).
+      - ❤️ **Care Tasks:** Completed care tasks count (e.g. `32 completed`), XP gained subtitle (`+280 XP gained`).
+    - **Today's Activity Unified Timeline:** Real-time chronological timeline merging all daily logs (Care, Walk, Training) sorted latest first with human-readable relative time (`Just now`, `2 hours ago`, `4 hours ago`).
+    - **Streaks Summary:** Quick snapshot of consecutive streak days for Walk, Training, and Care.
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/pets/:petId/activity-dashboard`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Active pet ID (e.g. `1` for Pedro) |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Activity dashboard retrieved successfully",
+    "data": {
+      "pet": {
+        "id": 1,
+        "name": "Pedro",
+        "breed": "Golden Retriever",
+        "photo_url": "http://localhost:8000/storage/pets/pedro.jpg"
+      },
+      "level": {
+        "current_level": 3,
+        "title": "Active Pup",
+        "current_xp": 2930,
+        "next_level": 4,
+        "next_level_xp": 3000,
+        "xp_to_next_level": 70,
+        "progress_text": "70 to Level 4",
+        "progress_percentage": 93.0,
+        "badge_icon": "level_badge_3"
+      },
+      "rank": {
+        "current_rank": "Gold III",
+        "next_rank": "Gold II",
+        "current_tp": 700,
+        "target_tp": 770,
+        "tp_to_next": 70,
+        "progress_text": "70 to Gold II",
+        "progress_percentage": 90.9,
+        "badge_icon": "rank_gold_iii"
+      },
+      "metrics": {
+        "walk_activity": {
+          "distance_km": 12.4,
+          "distance_formatted": "12.4 km",
+          "walks_this_week": 4,
+          "subtitle": "4 walks this week",
+          "all_time_distance_km": 12.4,
+          "icon": "paw_blue"
+        },
+        "training_lessons": {
+          "sessions_count": 3,
+          "sessions_formatted": "3 sessions",
+          "tp_gained": 700,
+          "subtitle": "+700 TP gained",
+          "icon": "certificate_yellow"
+        },
+        "care_tasks": {
+          "completed_count": 32,
+          "completed_formatted": "32 completed",
+          "xp_gained": 280,
+          "subtitle": "+280 XP gained",
+          "icon": "heart_care_red"
+        }
+      },
+      "today_activities": [
+        {
+          "id": "care_58",
+          "type": "care",
+          "title": "Care completed",
+          "task_name": "Morning Meal",
+          "completed_at": "2026-10-31T05:25:42+00:00",
+          "relative_time": "Just now",
+          "xp_earned": 10,
+          "metrics": {
+            "xp": "+10 XP",
+            "task_type": "food"
+          },
+          "icon": "check_circle_teal"
+        },
+        {
+          "id": "walk_36",
+          "type": "walk",
+          "title": "Walk completed",
+          "task_name": "Walk Session (2.1 km)",
+          "completed_at": "2026-10-31T03:27:42+00:00",
+          "relative_time": "2 hours ago",
+          "xp_earned": 105,
+          "metrics": {
+            "distance_km": 2.1,
+            "duration_minutes": 28,
+            "steps": 2600,
+            "xp": "+105 XP"
+          },
+          "icon": "check_circle_teal"
+        },
+        {
+          "id": "training_7",
+          "type": "training",
+          "title": "Training completed",
+          "task_name": "Come (Reliable Recall)",
+          "completed_at": "2026-10-31T01:27:42+00:00",
+          "relative_time": "4 hours ago",
+          "tp_earned": 40,
+          "xp_earned": 70,
+          "metrics": {
+            "tp": "+40 TP",
+            "xp": "+70 XP",
+            "difficulty": "intermediate"
+          },
+          "icon": "check_circle_teal"
+        }
+      ],
+      "streaks_summary": {
+        "walk_streak_days": 5,
+        "training_streak_days": 3,
+        "care_streak_days": 7
+      }
+    }
+  }
+  ```
+
+  ---
+
+  ## Error Responses
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Pet belongs to another user.
+  - **404 Not Found:** Pet not found.

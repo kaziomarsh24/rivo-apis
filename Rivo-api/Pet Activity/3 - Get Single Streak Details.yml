@@ -1,0 +1,76 @@
+info:
+  name: Get Single Streak Details
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/pets/1/streaks/walk"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userToken}}"
+
+docs: |-
+  # Get Single Streak Details API
+
+  Retrieves focused streak metrics and 7-day indicators for a single activity type (`walk`, `training`, or `care`).
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/pets/:petId/streaks/:type`
+  - **Authentication:** `Bearer {{userToken}}`
+
+  ### Path Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `petId` | integer | Yes | Active pet ID (e.g. `1` for Pedro) |
+  | `type` | string | Yes | Streak type: `walk`, `training`, or `care` |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Walk streak retrieved successfully",
+    "data": {
+      "pet_id": 1,
+      "streak": {
+        "type": "walk",
+        "title": "Walk Streak",
+        "subtitle": "Consistency tracker",
+        "current_days": 5,
+        "best_days": 14,
+        "last_completed_date": "Oct 31",
+        "is_completed_today": true,
+        "status_message": "Completed today - streak continues!",
+        "last_7_days": [
+          {"day": "S", "day_name": "Sun", "date": "2026-10-25", "is_today": false, "is_completed": false},
+          {"day": "M", "day_name": "Mon", "date": "2026-10-26", "is_today": false, "is_completed": false},
+          {"day": "T", "day_name": "Tue", "date": "2026-10-27", "is_today": false, "is_completed": false},
+          {"day": "W", "day_name": "Wed", "date": "2026-10-28", "is_today": false, "is_completed": true},
+          {"day": "T", "day_name": "Thu", "date": "2026-10-29", "is_today": false, "is_completed": true},
+          {"day": "F", "day_name": "Fri", "date": "2026-10-30", "is_today": false, "is_completed": true},
+          {"day": "S", "day_name": "Sat", "date": "2026-10-31", "is_today": true, "is_completed": true}
+        ],
+        "icon": "flame_orange"
+      }
+    }
+  }
+  ```
+
+  ---
+
+  ## Error Responses
+  - **422 Unprocessable Entity:** When an invalid streak type is passed (e.g. `invalid_type`).
+    ```json
+    {
+      "ok": false,
+      "message": "Invalid streak type 'invalid_type'. Allowed types: walk, training, care."
+    }
+    ```
+  - **401 Unauthorized:** Missing or invalid Bearer token.
+  - **403 Forbidden:** Pet belongs to another user.
