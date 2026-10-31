@@ -1,0 +1,40 @@
+info:
+  name: Delete Pet Vaccination
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{base_url}}/v1/pets/1/vaccinations/1"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userSarah}}"
+
+docs: |-
+  # Delete Pet Vaccination API
+
+  Deletes a pet vaccination record. Automatically purges any stored certificate file from disk via `laravel-smart-upload`'s `HasUploadPurge` and syncs the pet's `is_vaccinated` status.
+
+  ## Figma Screen
+  - **Screen:** `Vaccination Detail` -> `Delete Record` Confirmation Dialog
+
+  ---
+
+  ## Request Details
+  - **Method:** `DELETE`
+  - **URL:** `{{base_url}}/v1/pets/:petId/vaccinations/:vaccinationId`
+  - **Authentication:** `Bearer {{userSarah}}`
+
+  ---
+
+  ## Response (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Vaccination deleted successfully",
+    "data": []
+  }
+  ```

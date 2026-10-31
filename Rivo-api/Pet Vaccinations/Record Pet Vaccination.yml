@@ -1,0 +1,122 @@
+info:
+  name: Record Pet Vaccination
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/pets/1/vaccinations"
+  headers:
+    - name: Accept
+      value: application/json
+  body:
+    type: multipart-form
+    form:
+      - name: name
+        value: Canine Influenza (H3N2/H3N8)
+        type: text
+        enabled: true
+      - name: vaccine_type
+        value: non_core
+        type: text
+        enabled: true
+      - name: administered_at
+        value: 2026-10-31
+        type: text
+        enabled: true
+      - name: due_at
+        value: 2027-10-31
+        type: text
+        enabled: true
+      - name: clinic_name
+        value: Downtown Animal Medical Center
+        type: text
+        enabled: true
+      - name: veterinarian_name
+        value: Dr. Sarah Chen, DACVIM
+        type: text
+        enabled: true
+      - name: batch_number
+        value: FLU-8820-K
+        type: text
+        enabled: true
+      - name: notes
+        value: Bivalent canine influenza vaccine administered. Next booster in 12 months.
+        type: text
+        enabled: true
+      - name: certificate
+        value: ""
+        type: file
+        enabled: false
+        description: "Upload vaccine certificate (PDF, JPG, PNG up to 10MB)"
+  auth:
+    type: bearer
+    token: "{{userSarah}}"
+
+docs: |-
+  # Record Pet Vaccination API
+
+  Records a new vaccination entry for a pet. Supports file uploads for medical vaccination certificates processed via `SmartUpload`.
+
+  ## Figma Screen
+  - **Screen:** `+ Add Vaccine Record` Modal Sheet
+  - **Inputs:** Name, Vaccine Type (`core`, `non_core`, `lifestyle`), Administered Date, Expiration/Due Date, Clinic Name, Veterinarian Name, Batch Number, Notes, Certificate File.
+
+  ---
+
+  ## Request Details
+  - **Method:** `POST`
+  - **URL:** `{{base_url}}/v1/pets/:petId/vaccinations`
+  - **Content-Type:** `multipart/form-data`
+  - **Authentication:** `Bearer {{userSarah}}`
+
+  ### Form Fields
+  | Field | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `name` | string | Yes | Vaccine name (e.g. `Canine Influenza`) |
+  | `vaccine_type` | string | No | `core`, `non_core`, or `lifestyle` |
+  | `administered_at` | date (YYYY-MM-DD) | Yes | Date vaccine was given |
+  | `due_at` | date (YYYY-MM-DD) | Yes | Due date for next booster |
+  | `clinic_name` | string | No | Administering veterinary clinic |
+  | `veterinarian_name` | string | No | Attending veterinarian |
+  | `batch_number` | string | No | Vaccine lot/batch number |
+  | `certificate` | file | No | PDF, JPG, or PNG document (max 10MB) |
+  | `notes` | string | No | Clinical observations or dosage instructions |
+
+  ---
+
+  ## Response (201 Created)
+  ```json
+  {
+    "ok": true,
+    "message": "Vaccination recorded successfully",
+    "data": {
+      "id": 5,
+      "pet_id": 1,
+      "name": "Canine Influenza (H3N2/H3N8)",
+      "vaccine_type": "non_core",
+      "administered_at": "2026-10-31",
+      "administered_at_formatted": "31 Oct 2026",
+      "due_at": "2027-10-31",
+      "due_at_formatted": "31 Oct 2027",
+      "days_remaining": 365,
+      "status": "up_to_date",
+      "status_badge": {
+        "status": "up_to_date",
+        "label": "Up to Date",
+        "color": "#10B981",
+        "background_color": "#D1FAE5",
+        "icon": "check_circle",
+        "description": "Valid and fully protected"
+      },
+      "clinic_name": "Downtown Animal Medical Center",
+      "veterinarian_name": "Dr. Sarah Chen, DACVIM",
+      "batch_number": "FLU-8820-K",
+      "certificate_url": null,
+      "has_certificate": false,
+      "notes": "Bivalent canine influenza vaccine administered.",
+      "created_at": "2026-10-31T08:18:00.000000Z",
+      "updated_at": "2026-10-31T08:18:00.000000Z"
+    }
+  }
+  ```

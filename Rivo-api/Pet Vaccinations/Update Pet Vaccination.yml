@@ -1,0 +1,67 @@
+info:
+  name: Update Pet Vaccination
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/pets/1/vaccinations/1"
+  headers:
+    - name: Accept
+      value: application/json
+  body:
+    type: multipart-form
+    form:
+      - name: name
+        value: Rabies Vaccine (3-Year Booster)
+        type: text
+        enabled: true
+      - name: batch_number
+        value: RB-2026-9941-REV
+        type: text
+        enabled: true
+      - name: notes
+        value: Updated notes: Vet verified vaccination stamp and signed certificate.
+        type: text
+        enabled: true
+      - name: certificate
+        value: ""
+        type: file
+        enabled: false
+        description: "Upload replacement certificate file (auto-purges old file via SmartUpload)"
+  auth:
+    type: bearer
+    token: "{{userSarah}}"
+
+docs: |-
+  # Update Pet Vaccination API
+
+  Updates an existing vaccination record. Allows editing details or uploading a replacement certificate file (which automatically purges the old certificate from disk via `laravel-smart-upload`).
+
+  ## Figma Screen
+  - **Screen:** `Edit Vaccination Record`
+
+  ---
+
+  ## Request Details
+  - **Method:** `POST` (or `PUT`)
+  - **URL:** `{{base_url}}/v1/pets/:petId/vaccinations/:vaccinationId`
+  - **Content-Type:** `multipart/form-data`
+  - **Authentication:** `Bearer {{userSarah}}`
+
+  ---
+
+  ## Response (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Vaccination updated successfully",
+    "data": {
+      "id": 1,
+      "pet_id": 1,
+      "name": "Rabies Vaccine (3-Year Booster)",
+      "batch_number": "RB-2026-9941-REV",
+      "notes": "Updated notes: Vet verified vaccination stamp and signed certificate."
+    }
+  }
+  ```

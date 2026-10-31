@@ -1,0 +1,92 @@
+info:
+  name: Get Pet Vaccinations
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/pets/1/vaccinations"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: filter[status]
+      value: ""
+      enabled: false
+      description: "Filter by status: up_to_date, due_soon, overdue"
+    - name: filter[vaccine_type]
+      value: ""
+      enabled: false
+      description: "Filter by vaccine type: core, non_core, lifestyle"
+    - name: sort
+      value: due_at
+      enabled: true
+      description: "Sort by: due_at, -due_at, administered_at, name"
+  auth:
+    type: bearer
+    token: "{{userSarah}}"
+
+docs: |-
+  # Get Pet Vaccinations API
+
+  Retrieves all dedicated vaccination records for a specific pet with real-time computed status, Figma-matched badge metadata, and certificate file URLs.
+
+  ## Figma Screen
+  - **Screen:** `Vaccinations Tracking` / `Pet Medical History`
+  - **UI Elements:**
+    - Filter tabs: `All`, `Up to Date` (Green), `Due Soon` (Orange), `Overdue` (Red)
+    - Vaccine card: Name, Type tag, Status badge with countdown/elapsed days, Administered date, Due date, Clinic name, Batch number, Certificate download link.
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/pets/:petId/vaccinations`
+  - **Authentication:** `Bearer {{userSarah}}`
+
+  ### Query Parameters
+  | Parameter | Type | Required | Description |
+  | :--- | :--- | :--- | :--- |
+  | `filter[status]` | string | No | Filter by `up_to_date`, `due_soon`, or `overdue` |
+  | `filter[vaccine_type]` | string | No | Filter by `core`, `non_core`, or `lifestyle` |
+  | `sort` | string | No | Sort order: `due_at` (default), `-due_at`, `administered_at`, `name` |
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Pet vaccinations retrieved successfully",
+    "data": [
+      {
+        "id": 1,
+        "pet_id": 1,
+        "name": "Rabies Vaccine (3-Year)",
+        "vaccine_type": "core",
+        "administered_at": "2026-04-30",
+        "administered_at_formatted": "30 Apr 2026",
+        "due_at": "2027-04-30",
+        "due_at_formatted": "30 Apr 2027",
+        "days_remaining": 181,
+        "status": "up_to_date",
+        "status_badge": {
+          "status": "up_to_date",
+          "label": "Up to Date",
+          "color": "#10B981",
+          "background_color": "#D1FAE5",
+          "icon": "check_circle",
+          "description": "Valid and fully protected"
+        },
+        "clinic_name": "Metropolitan Pet Hospital & Trauma Center",
+        "veterinarian_name": "Dr. Emily Watson, DVM",
+        "batch_number": "RB-2026-9941",
+        "certificate_url": "http://10.10.28.53:80/storage/vaccinations/sample_rabies_cert.pdf",
+        "has_certificate": true,
+        "notes": "Annual rabies 3-year booster administered subcutaneously right hind leg.",
+        "created_at": "2026-10-31T08:15:28.000000Z",
+        "updated_at": "2026-10-31T08:15:28.000000Z"
+      }
+    ]
+  }
+  ```

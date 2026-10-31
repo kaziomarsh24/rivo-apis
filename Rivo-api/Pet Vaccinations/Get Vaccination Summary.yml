@@ -1,0 +1,77 @@
+info:
+  name: Get Vaccination Summary
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/pets/1/vaccinations/summary"
+  headers:
+    - name: Accept
+      value: application/json
+  auth:
+    type: bearer
+    token: "{{userSarah}}"
+
+docs: |-
+  # Get Pet Vaccination Summary API
+
+  Retrieves the top summary card payload for the pet's vaccination status, matching Figma's dashboard metrics card.
+
+  ## Figma Screen
+  - **Screen:** `Vaccinations Tracking` Top Summary Header
+  - **Metrics Computed:**
+    - `total_count`: Total vaccines recorded for pet
+    - `up_to_date_count`: Count of vaccines valid > 30 days
+    - `due_soon_count`: Count of vaccines due within 30 days
+    - `overdue_count`: Count of overdue vaccines
+    - `overall_status`: `attention_needed`, `due_soon`, or `up_to_date`
+    - `overall_badge`: UI badge label, hex colors, and icon
+    - `next_due_vaccine`: Next immediate booster card info
+
+  ---
+
+  ## Request Details
+  - **Method:** `GET`
+  - **URL:** `{{base_url}}/v1/pets/:petId/vaccinations/summary`
+  - **Authentication:** `Bearer {{userSarah}}`
+
+  ---
+
+  ## Response Structure (200 OK)
+  ```json
+  {
+    "ok": true,
+    "message": "Pet vaccination summary retrieved successfully",
+    "data": {
+      "pet_id": 1,
+      "total_count": 4,
+      "up_to_date_count": 2,
+      "due_soon_count": 1,
+      "overdue_count": 1,
+      "overall_status": "attention_needed",
+      "overall_badge": {
+        "label": "1 Vaccine Overdue",
+        "color": "#EF4444",
+        "background_color": "#FEE2E2",
+        "icon": "alert_circle"
+      },
+      "next_due_vaccine": {
+        "id": 2,
+        "name": "DHPP (Distemper, Parvo)",
+        "due_at": "2026-11-18",
+        "due_at_formatted": "18 Nov 2026",
+        "days_remaining": 18,
+        "status": "due_soon",
+        "status_badge": {
+          "status": "due_soon",
+          "label": "Due Soon",
+          "color": "#F59E0B",
+          "background_color": "#FEF3C7",
+          "icon": "clock",
+          "description": "Due in 18 days"
+        }
+      }
+    }
+  }
+  ```
