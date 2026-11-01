@@ -1,0 +1,119 @@
+info:
+  name: Get Pet Owner Details
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/users/{{selectedUserId}}"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+vars:
+  selectedUserId: 226
+
+docs: |-
+  # Admin Pet Owners CRM - Single User Details
+  
+  Returns comprehensive profile telemetry, owned pets list, streak metrics across activities (walks, care tasks, training), earned badges, and emergency contacts.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Path Parameters
+  - `selectedUserId`: The user primary key ID to inspect.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "User details retrieved successfully.",
+    "data": {
+      "id": 226,
+      "name": "Sarah Mitchell",
+      "email": "sarah.mitchell@example.com",
+      "phone_number": "+12025550198",
+      "avatar": "http://api.thedreamdividend.com/storage/avatars/user_226.jpg",
+      "email_verified_at": "2026-10-31T05:06:23.000000Z",
+      "created_at": "2026-10-31T05:06:23.000000Z",
+      "joined_formatted": "Oct 31, 2026",
+      "status": "active",
+      "is_suspended": false,
+      "suspended_at": null,
+      "suspension_reason": null,
+      "plan": {
+        "id": 2,
+        "name": "Rivo Plus",
+        "badge": "plus",
+        "price": "4.97",
+        "subscription_expires_at": "2026-11-30T05:06:23.000000Z",
+        "is_active": true
+      },
+      "stats": {
+        "total_pets": 1,
+        "total_xp": 305,
+        "level": 4,
+        "streaks": {
+          "walk_streak": 5,
+          "care_streak": 7,
+          "training_streak": 3,
+          "longest_streak": 12
+        },
+        "total_completed_care_tasks": 14,
+        "total_appointments": 2
+      },
+      "pets": [
+        {
+          "id": 14,
+          "name": "Bella",
+          "type": "dog",
+          "breed": "Golden Retriever",
+          "age_years": 2,
+          "age_months": 4,
+          "weight": "25.50",
+          "gender": "female",
+          "avatar": "http://api.thedreamdividend.com/storage/pets/pet_14.jpg",
+          "is_vaccinated": true,
+          "is_lost": false,
+          "total_xp": 305,
+          "level": 4,
+          "walk_stats": {
+            "total_xp": 150,
+            "current_level": 2,
+            "current_streak_days": 5,
+            "longest_streak_days": 12
+          },
+          "care_stats": {
+            "total_xp": 75,
+            "total_completed_tasks": 14,
+            "current_streak_days": 7,
+            "longest_streak_days": 10
+          },
+          "training_stats": {
+            "total_tp": 80,
+            "current_rank": "Novice",
+            "current_streak_days": 3,
+            "longest_streak_days": 5
+          },
+          "displayed_badges": ["walk_star_7d", "care_master_14d"],
+          "vaccinations_count": 3
+        }
+      ],
+      "emergency_contacts": [
+        {
+          "id": 5,
+          "name": "Dr. Sarah Adams",
+          "relationship": "Primary Veterinarian",
+          "phone_number": "+12025550199",
+          "is_primary": true
+        }
+      ],
+      "recent_appointments": []
+    }
+  }
+  ```

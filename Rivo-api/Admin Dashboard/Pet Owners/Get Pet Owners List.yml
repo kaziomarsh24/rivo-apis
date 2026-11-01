@@ -1,0 +1,103 @@
+info:
+  name: Get Pet Owners List
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/users?page=1&per_page=10&plan=all&status=all&sort=newest"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  params:
+    - name: page
+      value: "1"
+      description: "Pagination page number"
+      type: query
+    - name: per_page
+      value: "10"
+      description: "Items per page (max 100)"
+      type: query
+    - name: search
+      value: ""
+      description: "Optional keyword to search across name, email, or phone number"
+      type: query
+    - name: plan
+      value: "all"
+      description: "Filter by subscription tier: 'all', 'free', 'plus', 'pro'"
+      type: query
+    - name: status
+      value: "all"
+      description: "Filter by account status: 'all', 'active', 'suspended'"
+      type: query
+    - name: sort
+      value: "newest"
+      description: "Sorting option: 'newest', 'oldest', 'name_asc', 'name_desc'"
+      type: query
+  auth: inherit
+
+docs: |-
+  # Admin Pet Owners CRM - User Listing
+  
+  Returns a paginated list of all pet owners and platform users with filters, search, and aggregated CRM metadata (pet count, total XP, level, plan badge, account status).
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Query Parameters
+  - `page`: (int, optional, default: 1) Page number.
+  - `per_page`: (int, optional, default: 10, max: 100) Records per page.
+  - `search`: (string, optional) Case-insensitive search on name, email, or phone.
+  - `plan`: (string, optional, default: `all`) `all`, `free`, `plus`, `pro`.
+  - `status`: (string, optional, default: `all`) `all`, `active`, `suspended`.
+  - `sort`: (string, optional, default: `newest`) `newest`, `oldest`, `name_asc`, `name_desc`.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Users retrieved successfully.",
+    "data": {
+      "data": [
+        {
+          "id": 226,
+          "name": "Sarah Mitchell",
+          "email": "sarah.mitchell@example.com",
+          "phone_number": "+12025550198",
+          "avatar": "http://api.thedreamdividend.com/storage/avatars/user_226.jpg",
+          "plan": {
+            "id": 2,
+            "name": "Rivo Plus",
+            "badge": "plus"
+          },
+          "status": "active",
+          "is_suspended": false,
+          "suspended_at": null,
+          "suspension_reason": null,
+          "pets_count": 2,
+          "total_xp": 380,
+          "level": 4,
+          "created_at": "2026-10-31T05:06:23.000000Z",
+          "joined_formatted": "Oct 31, 2026"
+        }
+      ],
+      "links": {
+        "first": "http://api.thedreamdividend.com/api/v1/admin/users?page=1",
+        "last": "http://api.thedreamdividend.com/api/v1/admin/users?page=3",
+        "prev": null,
+        "next": "http://api.thedreamdividend.com/api/v1/admin/users?page=2"
+      },
+      "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 3,
+        "per_page": 10,
+        "to": 10,
+        "total": 24
+      }
+    }
+  }
+  ```
