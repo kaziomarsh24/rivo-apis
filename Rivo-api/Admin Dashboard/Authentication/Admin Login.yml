@@ -1,0 +1,70 @@
+info:
+  name: Admin Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/auth/login"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "email": "admin@rivo.app",
+        "password": "Password@123"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        try {
+            const jsonData = res.getBody();
+            if (jsonData && jsonData.data && jsonData.data.access_token) {
+                const token = jsonData.data.access_token;
+                bru.setVar("adminToken", token);
+                console.log("Admin token saved to 'adminToken'");
+            }
+        } catch (e) {
+            console.error("Failed to extract admin token:", e);
+        }
+
+docs: |-
+  # Admin Login
+  
+  Authenticates the platform administrator into the Rivo Admin Console.
+  
+  ### Credentials
+  - **Email**: `admin@rivo.app`
+  - **Password**: `Password@123`
+  
+  ### Security & Role Validation
+  - On successful authentication, the response includes `roles` with `admin`.
+  - The after-response script automatically saves the `access_token` into the Bruno environment variable **`adminToken`**, which powers all other protected admin endpoints.
+  - If a non-admin user attempts to call protected `/api/v1/admin/*` endpoints with their token, the backend immediately responds with `403 Forbidden`.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Login successful",
+    "data": {
+      "access_token": "...",
+      "token_type": "Bearer",
+      "user": {
+        "id": 1,
+        "name": "Admin User",
+        "email": "admin@rivo.app",
+        "roles": [
+          { "name": "admin" }
+        ]
+      }
+    }
+  }
+  ```

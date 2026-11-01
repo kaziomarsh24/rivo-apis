@@ -1,0 +1,7 @@
+info:
+  name: Admin Dashboard
+  type: folder
+  seq: 18
+
+request:
+  auth: inherit

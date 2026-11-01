@@ -1,0 +1,67 @@
+info:
+  name: Get Dashboard Stats
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/dashboard/stats?range=month"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  params:
+    - name: range
+      value: month
+      description: "Aggregation time scope: 'month' (default) or 'year'"
+      type: query
+  auth: inherit
+
+docs: |-
+  # Admin Dashboard Overview Statistics
+  
+  Returns high-level platform telemetry, KPI metrics, and 5-bar sparkline histogram data for the main Admin Dashboard overview.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Query Parameters
+  - `range`: (string, optional, default: `month`) Telemetry range window (`month` or `year`).
+  
+  ### Response Attributes
+  - `total_users`: Total number of registered pet owners and users on Rivo.
+  - `total_pets`: Total number of registered pets in the system.
+  - `plus_users`: Count of users currently enrolled in the **Rivo Plus** tier.
+  - `pro_users`: Count of users currently enrolled in the **Rivo Pro** tier.
+  - `revenue_this_month`: Aggregate revenue generated in the current month across payments and orders.
+  - `revenue_histogram`: Array of 5 numbers for the Figma sparkline chart representing recent interval revenue.
+  - `active_providers`: Verified service providers that are currently live.
+  - `approved_providers`: Total verified service providers.
+  - `pending_provider_requests`: Partner applications awaiting administrator KYC review.
+  - `active_subscriptions`: Total active premium subscribers.
+  - `subscription_trend_pct`: Percentage growth trend compared to previous month.
+  - `subscription_histogram`: Array of 5 numbers for the subscription histogram chart.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Dashboard stats retrieved successfully.",
+    "data": {
+      "total_users": 24580,
+      "total_pets": 31240,
+      "plus_users": 4820,
+      "pro_users": 2150,
+      "revenue_this_month": 84320.00,
+      "revenue_histogram": [12000, 15000, 18500, 19200, 19620],
+      "active_providers": 486,
+      "approved_providers": 421,
+      "pending_provider_requests": 12,
+      "active_subscriptions": 6970,
+      "subscription_trend_pct": 3.2,
+      "subscription_histogram": [1300, 1380, 1410, 1430, 1450]
+    }
+  }
+  ```

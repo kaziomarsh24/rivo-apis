@@ -1,0 +1,76 @@
+info:
+  name: Get Recent Activity
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/dashboard/activity?limit=20"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  params:
+    - name: limit
+      value: 20
+      description: "Maximum number of audit events to return (Default: 20)"
+      type: query
+  auth: inherit
+
+docs: |-
+  # Admin Dashboard Recent Activity Feed
+  
+  Returns a unified chronological audit feed of platform events that occurred over the last 24 hours.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Event Sources Aggregated
+  1. `provider_request`: New partner applications submitted by stores/clinics.
+  2. `provider_approved`: Stores verified and approved by administrators.
+  3. `subscription`: Users subscribing or upgrading to Plus/Pro plans.
+  4. `user_registration`: New pet owners joining the platform.
+  5. `training_published`: New dog training curricula published.
+  6. `payment`: Stripe / gateway transactions successfully captured.
+  
+  ### Query Parameters
+  - `limit`: (integer, optional, default: `20`) Limit returned events.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Recent platform activity retrieved successfully.",
+    "data": [
+      {
+        "id": "store_req_12",
+        "type": "provider_request",
+        "title": "New provider request from PetCare Store",
+        "subtitle": "Type: Pet shop",
+        "timestamp": "2026-10-31T10:14:00.000Z",
+        "time_ago": "2 minutes ago",
+        "icon": "alert_circle",
+        "meta": {
+          "store_id": 12,
+          "owner_name": "Marcus Reid",
+          "city": "Austin"
+        }
+      },
+      {
+        "id": "sub_user_48",
+        "type": "subscription",
+        "title": "Emma Wilson active on Rivo Pro",
+        "subtitle": "Expiry: Sep 21, 2026",
+        "timestamp": "2026-10-31T09:58:00.000Z",
+        "time_ago": "18 minutes ago",
+        "icon": "star",
+        "meta": {
+          "user_id": 48,
+          "plan_id": 3
+        }
+      }
+    ]
+  }
+  ```
