@@ -17,10 +17,15 @@ http:
         value: sarah.mitchell@yopmail.com
         description: Customer or Vendor email (e.g. sarah.mitchell@yopmail.com for vendor, kaziomar@yopmail.com for pet parent)
         disabled: true
+      - name: email
+        type: text
+        value: admin@rivo.app
+        description: Platform Administrator email (Password: Password@123)
+        disabled: true
       - name: password
         type: text
         value: "11111111"
-        description: "Account password (Default: 11111111)"
+        description: "Account password (Default: 11111111, Admin: Password@123)"
       - name: fcm_token
         type: text
         value: your_device_fcm_token_here
@@ -50,6 +55,12 @@ runtime:
                 if (user && user.roles && user.roles.some(r => r.name === 'vendor')) {
                     bru.setVar("vendorToken", token);
                     console.log("Vendor detected! Token saved to 'vendorToken'");
+                }
+
+                // If user is an admin, automatically set adminToken
+                if (user && user.roles && user.roles.some(r => r.name === 'admin')) {
+                    bru.setVar("adminToken", token);
+                    console.log("Admin detected! Token saved to 'adminToken'");
                 }
             }
         } catch (e) {

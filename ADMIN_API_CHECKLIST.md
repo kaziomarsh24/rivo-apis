@@ -22,14 +22,16 @@
 
 ## 📋 API Checklist & Test Steps
 
-### Module 1: Admin Authentication & Password Recovery
+### Module 1: Authentication & Password Recovery (Common / Unified)
+
+> **Note**: Uses the common Auth API in `Rivo-api/Auth/`. Logging in as `admin@rivo.app` automatically saves the token to Bruno's `{{adminToken}}`.
 
 | Method | Endpoint | Bruno Path | Description | Tested |
 | :--- | :--- | :--- | :--- | :---: |
-| `POST` | `/api/v1/auth/login` | `Admin Dashboard/Authentication/Admin Login` | Logs in administrator, saves token to `adminToken` | [x] |
-| `POST` | `/api/v1/auth/forgot-password` | `Admin Dashboard/Authentication/Forgot Password` | Sends 6-digit verification OTP to `admin@rivo.app` | [x] |
-| `POST` | `/api/v1/auth/verify-password-otp` | `Admin Dashboard/Authentication/Verify Password OTP` | Verifies code and saves `adminResetToken` | [x] |
-| `POST` | `/api/v1/auth/reset-password-with-token` | `Admin Dashboard/Authentication/Reset Password` | Resets password using verified token | [x] |
+| `POST` | `/api/v1/auth/login` | `Auth/Authentication/Login` | Logs in customer, vendor, or administrator (`adminToken`) | [x] |
+| `POST` | `/api/v1/auth/forgot-password` | `Auth/Password Management/Forgot Password` | Sends 6-digit verification OTP to email | [x] |
+| `POST` | `/api/v1/auth/verify-password-otp` | `Auth/Password Management/Verify Reset OTP` | Verifies code and generates reset token | [x] |
+| `POST` | `/api/v1/auth/reset-password-with-token` | `Auth/Password Management/Reset Password with Token` | Resets password using verified token | [x] |
 
 ---
 
@@ -73,3 +75,4 @@ curl -X GET "http://10.10.28.53:80/api/v1/admin/dashboard/activity?limit=20" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer <YOUR_ADMIN_TOKEN>"
 ```
+
