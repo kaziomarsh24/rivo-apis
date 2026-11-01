@@ -2,7 +2,7 @@
 
 **Environment**: `http://10.10.28.53:80/api` or `http://localhost:8000/api`  
 **Authentication Header**: `Authorization: Bearer {{adminToken}}`  
-**Default Admin**: `admin@rivo.app` / `Password@123`  
+**Default Admin**: `admin@rivo.app` / `11111111`  
 **Date**: 2026-11-01  
 
 ---
@@ -59,7 +59,7 @@ docker exec rivo-app php artisan test --filter=AdminDashboardTest
 curl -X POST "http://10.10.28.53:80/api/v1/auth/login" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@rivo.app","password":"Password@123"}'
+  -d '{"email":"admin@rivo.app","password":"11111111"}'
 ```
 
 #### Step B: Get Dashboard Statistics (Protected)

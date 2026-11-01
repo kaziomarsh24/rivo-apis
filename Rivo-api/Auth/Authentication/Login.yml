@@ -20,7 +20,7 @@ http:
       - name: email
         type: text
         value: admin@rivo.app
-        description: "Platform Administrator email (Password: Password@123)"
+        description: "Platform Administrator email (Password: 11111111)"
         disabled: true
       - name: password
         type: text
@@ -124,6 +124,7 @@ docs: |-
   | :--- | :--- | :--- | :--- |
   | **Customer (Pet Parent)** | `kaziomar@yopmail.com` | `11111111` | Has active pet Pedro (Golden Retriever), default address in Austin TX, active cart, and order history. |
   | **Vendor (Store Owner)** | `sarah.mitchell@yopmail.com` | `11111111` | Owner of **Pawsome Pet Shop**, has active products catalog, incoming orders, and verified KYC docs. |
+  | **Platform Admin** | `admin@rivo.app` | `11111111` | Platform administrator with full `admin` role, automatically sets `adminToken`. |
 
   ---
 
