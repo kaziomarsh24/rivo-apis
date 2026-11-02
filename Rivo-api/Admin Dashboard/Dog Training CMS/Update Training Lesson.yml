@@ -1,0 +1,60 @@
+info:
+  name: Update Training Lesson
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{base_url}}/v1/admin/trainings/{{selectedLessonId}}"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Loose Leash Walking Pro",
+        "duration_minutes": 20,
+        "reward_tp": 4,
+        "reward_xp": 45,
+        "difficulty": "advanced",
+        "is_plus_only": true,
+        "is_active": true
+      }
+  auth: inherit
+
+vars:
+  selectedLessonId: 1
+
+docs: |-
+  # Admin Dog Training CMS - Update Lesson
+  
+  Updates lesson metadata, duration, XP rewards, or modifies the attached steps.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Path Parameters
+  - `selectedLessonId`: Target lesson ID.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lesson updated successfully.",
+    "data": {
+      "id": 1,
+      "title": "Loose Leash Walking Pro",
+      "duration_minutes": 20,
+      "reward_tp": 4,
+      "reward_xp": 45,
+      "difficulty": "advanced",
+      "is_plus_only": true
+    }
+  }
+  ```

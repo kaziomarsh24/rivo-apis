@@ -1,0 +1,90 @@
+info:
+  name: Create Training Lesson
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/admin/trainings"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "category_id": 1,
+        "title": "Loose Leash Walking",
+        "tag": "WALK",
+        "species": "dog",
+        "difficulty": "intermediate",
+        "duration_minutes": 15,
+        "impact": "Medium impact",
+        "reward_tp": 3,
+        "reward_xp": 35,
+        "summary": "Stop pulling and encourage your dog to walk peacefully beside you.",
+        "description": "Loose leash walking takes patience and continuous positive reinforcement.",
+        "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        "is_plus_only": false,
+        "is_active": true,
+        "order_column": 4,
+        "steps": [
+          {
+            "step_number": 1,
+            "title": "Start in Low Distraction Area",
+            "instruction": "Begin indoors or in a quiet backyard before heading to busy streets.",
+            "tip": "Reward eye contact frequently during the first 3 minutes."
+          },
+          {
+            "step_number": 2,
+            "title": "Stop When Leash Tenses",
+            "instruction": "The moment the leash goes taut, freeze like a tree. Never pull back.",
+            "tip": "Wait until your dog looks back or steps towards you, then resume."
+          }
+        ]
+      }
+  auth: inherit
+
+docs: |-
+  # Admin Dog Training CMS - Create New Lesson
+  
+  Creates a new dog training lesson with optional step instructions and media attributes.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Body Parameters
+  - `category_id`: (int, required) Category ID.
+  - `title`: (string, required) Lesson title.
+  - `difficulty`: (string, required) `beginner`, `intermediate`, `advanced`, `master`.
+  - `duration_minutes`: (int, required) Estimated completion time.
+  - `reward_tp`: (int, required) Training Points awarded to pet profile.
+  - `reward_xp`: (int, required) Pet Experience Points awarded.
+  - `is_plus_only`: (bool, optional) Premium subscriber restriction.
+  - `is_active`: (bool, optional, default: true) Publication status (`true` = published, `false` = draft).
+  - `steps`: (array, optional) Step-by-step instructions.
+  
+  ### Expected Response (`201 Created`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lesson created successfully.",
+    "data": {
+      "id": 12,
+      "title": "Loose Leash Walking",
+      "slug": "loose-leash-walking",
+      "tag": "WALK",
+      "difficulty": "intermediate",
+      "duration_minutes": 15,
+      "reward_tp": 3,
+      "reward_xp": 35,
+      "status": "published",
+      "steps_count": 2
+    }
+  }
+  ```

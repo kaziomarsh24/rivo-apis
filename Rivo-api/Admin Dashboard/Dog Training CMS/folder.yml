@@ -1,0 +1,7 @@
+info:
+  name: Dog Training CMS
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit

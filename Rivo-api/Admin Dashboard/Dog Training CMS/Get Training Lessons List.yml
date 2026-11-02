@@ -1,0 +1,109 @@
+info:
+  name: Get Training Lessons List
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/trainings?page=1&per_page=10&status=all&difficulty=all&tier=all&sort=order_asc"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  params:
+    - name: page
+      value: "1"
+      description: "Page number"
+      type: query
+    - name: per_page
+      value: "10"
+      description: "Items per page (max 100)"
+      type: query
+    - name: search
+      value: ""
+      description: "Search keyword matching title, summary, or description"
+      type: query
+    - name: category_id
+      value: ""
+      description: "Optional filter by category ID"
+      type: query
+    - name: difficulty
+      value: "all"
+      description: "Filter by difficulty: 'all', 'beginner', 'intermediate', 'advanced', 'master'"
+      type: query
+    - name: status
+      value: "all"
+      description: "Filter by publication status: 'all', 'published', 'draft'"
+      type: query
+    - name: tier
+      value: "all"
+      description: "Filter by access tier: 'all', 'free', 'plus_only'"
+      type: query
+    - name: sort
+      value: "order_asc"
+      description: "Sort order: 'order_asc', 'newest', 'oldest', 'duration_asc', 'duration_desc', 'xp_desc'"
+      type: query
+  auth: inherit
+
+docs: |-
+  # Admin Dog Training CMS - Lessons Curriculum List
+  
+  Returns a paginated list of all training lessons across categories with curriculum ordering, difficulty, rewards, and completion counts.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lessons retrieved successfully.",
+    "data": {
+      "data": [
+        {
+          "id": 1,
+          "title": "Teach Sit Command",
+          "slug": "teach-sit-command",
+          "tag": "TRAINING Short",
+          "category": {
+            "id": 1,
+            "name": "Basic Commands",
+            "slug": "basic-commands"
+          },
+          "species": "dog",
+          "difficulty": "beginner",
+          "duration_minutes": 10,
+          "impact": "Low impact",
+          "reward_tp": 2,
+          "reward_xp": 20,
+          "thumbnail": "http://api.thedreamdividend.com/storage/trainings/sit.jpg",
+          "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "is_plus_only": false,
+          "is_active": true,
+          "status": "published",
+          "order_column": 1,
+          "steps_count": 3,
+          "completions_count": 45,
+          "created_at": "2026-10-31T05:06:25.000000Z",
+          "created_formatted": "Oct 31, 2026"
+        }
+      ],
+      "links": {
+        "first": "http://api.thedreamdividend.com/api/v1/admin/trainings?page=1",
+        "last": "http://api.thedreamdividend.com/api/v1/admin/trainings?page=1",
+        "prev": null,
+        "next": null
+      },
+      "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "per_page": 10,
+        "to": 11,
+        "total": 11
+      }
+    }
+  }
+  ```

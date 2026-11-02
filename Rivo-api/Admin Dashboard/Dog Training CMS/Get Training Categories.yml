@@ -1,0 +1,43 @@
+info:
+  name: Get Training Categories
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/trainings/categories"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+docs: |-
+  # Admin Dog Training CMS - Get Categories
+  
+  Returns all training lesson categories (e.g. Basic Commands, Walking & Leash, Tricks, Behavioral) for dropdown selection and filtering.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training categories retrieved successfully.",
+    "data": [
+      {
+        "id": 1,
+        "name": "Basic Commands",
+        "slug": "basic-commands",
+        "subtitle": "Essential obedience building blocks",
+        "icon": "bone",
+        "order_column": 1,
+        "is_active": true,
+        "lessons_count": 6
+      }
+    ]
+  }
+  ```

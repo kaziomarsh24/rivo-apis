@@ -1,0 +1,84 @@
+info:
+  name: Get Training Lesson Details
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/trainings/{{selectedLessonId}}"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+vars:
+  selectedLessonId: 1
+
+docs: |-
+  # Admin Dog Training CMS - Single Lesson Details
+  
+  Returns comprehensive lesson instructions, step-by-step visual cues, video URLs, and pet engagement telemetry.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lesson details retrieved successfully.",
+    "data": {
+      "id": 1,
+      "title": "Teach Sit Command",
+      "slug": "teach-sit-command",
+      "tag": "TRAINING Short",
+      "category": {
+        "id": 1,
+        "name": "Basic Commands",
+        "slug": "basic-commands",
+        "subtitle": "Essential obedience building blocks",
+        "icon": "bone"
+      },
+      "species": "dog",
+      "difficulty": "beginner",
+      "duration_minutes": 10,
+      "impact": "Low impact",
+      "reward_tp": 2,
+      "reward_xp": 20,
+      "summary": "Great confidence builder for puppies and young dogs.",
+      "description": "Step-by-step guide on how to lure and reinforce a calm sitting position.",
+      "thumbnail": "http://api.thedreamdividend.com/storage/trainings/sit.jpg",
+      "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      "is_plus_only": false,
+      "is_active": true,
+      "status": "published",
+      "order_column": 1,
+      "steps_count": 2,
+      "steps": [
+        {
+          "id": 1,
+          "step_number": 1,
+          "title": "Hold Treat Near Nose",
+          "instruction": "Place a treat right in front of your dog's nose without letting them eat it.",
+          "tip": "Keep their head focused upwards.",
+          "image_url": "http://api.thedreamdividend.com/storage/trainings/steps/step1.jpg"
+        },
+        {
+          "id": 2,
+          "step_number": 2,
+          "title": "Lure Head Back",
+          "instruction": "Slowly move the treat back over their forehead. As their chin lifts, their bottom naturally lowers.",
+          "tip": "Say 'Yes!' the exact instant their bottom touches the floor.",
+          "image_url": "http://api.thedreamdividend.com/storage/trainings/steps/step2.jpg"
+        }
+      ],
+      "completions_count": 45,
+      "bookmarks_count": 12,
+      "created_at": "2026-10-31T05:06:25.000000Z",
+      "updated_at": "2026-10-31T05:06:25.000000Z"
+    }
+  }
+  ```

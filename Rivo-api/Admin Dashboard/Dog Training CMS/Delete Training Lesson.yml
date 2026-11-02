@@ -1,0 +1,37 @@
+info:
+  name: Delete Training Lesson
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{base_url}}/v1/admin/trainings/{{selectedLessonId}}"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+vars:
+  selectedLessonId: 1
+
+docs: |-
+  # Admin Dog Training CMS - Delete Lesson
+  
+  Permanently removes a lesson, cascades step instructions, and purges associated media files from disk.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Path Parameters
+  - `selectedLessonId`: Target lesson ID to delete.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Training lesson deleted successfully."
+  }
+  ```
