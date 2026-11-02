@@ -1,0 +1,45 @@
+info:
+  name: Reactivate Provider
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/admin/providers/{{selectedProviderId}}/reactivate"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+vars:
+  selectedProviderId: 1
+
+docs: |-
+  # Admin Service Providers & KYC Moderation - Reactivate Provider
+  
+  Reactivates a previously suspended provider store, clearing `suspended_at` and restoration of marketplace visibility (`is_live = true`).
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Service provider reactivated successfully.",
+    "data": {
+      "id": 1,
+      "name": "Pawsome Pet Shop",
+      "slug": "pawsome-pet-shop",
+      "type": "pet_shop",
+      "status": "approved",
+      "is_suspended": false,
+      "suspended_at": null,
+      "suspension_reason": null,
+      "is_live": true
+    }
+  }
+  ```

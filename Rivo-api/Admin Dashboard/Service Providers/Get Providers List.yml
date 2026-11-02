@@ -1,0 +1,111 @@
+info:
+  name: Get Providers List
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/v1/admin/providers?page=1&per_page=10&status=all&category=all&sort=newest"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  params:
+    - name: page
+      value: "1"
+      description: "Pagination page number"
+      type: query
+    - name: per_page
+      value: "10"
+      description: "Records per page (max 100)"
+      type: query
+    - name: search
+      value: ""
+      description: "Keyword search on business name, owner name, email, phone, or city"
+      type: query
+    - name: status
+      value: "all"
+      description: "Filter by status: 'all', 'pending', 'approved', 'rejected', 'suspended'"
+      type: query
+    - name: category
+      value: "all"
+      description: "Filter by store type: 'all', 'pet_shop', 'veterinary', 'pharmacy', 'grooming'"
+      type: query
+    - name: sort
+      value: "newest"
+      description: "Sort order: 'newest', 'oldest', 'name_asc', 'name_desc', 'rating_desc'"
+      type: query
+  auth: inherit
+
+docs: |-
+  # Admin Service Providers & KYC Moderation - Providers List
+  
+  Returns a paginated list of all marketplace partners, vendors, veterinary clinics, pharmacies, and grooming services with KYC status and moderation telemetry.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Query Parameters
+  - `page`: (int, optional, default: 1)
+  - `per_page`: (int, optional, default: 10, max: 100)
+  - `search`: (string, optional) Case-insensitive search on business name, owner, city, email.
+  - `status`: (string, optional, default: `all`) `all`, `pending`, `approved`, `rejected`, `suspended`.
+  - `category`: (string, optional, default: `all`) `all`, `pet_shop`, `veterinary`, `pharmacy`, `grooming`.
+  - `sort`: (string, optional, default: `newest`) `newest`, `oldest`, `name_asc`, `name_desc`, `rating_desc`.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Service providers retrieved successfully.",
+    "data": {
+      "data": [
+        {
+          "id": 1,
+          "name": "Pawsome Pet Shop",
+          "slug": "pawsome-pet-shop",
+          "type": "pet_shop",
+          "type_label": "Pet Shop",
+          "owner_name": "John Doe",
+          "email": "vendor@pawsome.com",
+          "phone": "+15551234567",
+          "city": "Austin",
+          "state": "TX",
+          "street_address": "123 Pet Way",
+          "logo": "http://api.thedreamdividend.com/storage/stores/logo1.jpg",
+          "banner": "http://api.thedreamdividend.com/storage/stores/banner1.jpg",
+          "rating": 4.8,
+          "reviews_count": 42,
+          "is_verified": true,
+          "is_live": true,
+          "status": "approved",
+          "verification_status": "approved",
+          "rejection_reason": null,
+          "is_suspended": false,
+          "suspended_at": null,
+          "suspension_reason": null,
+          "documents_count": 2,
+          "products_count": 18,
+          "submitted_at": "2026-10-20T06:12:00.000000Z",
+          "submitted_formatted": "Oct 20, 2026"
+        }
+      ],
+      "links": {
+        "first": "http://api.thedreamdividend.com/api/v1/admin/providers?page=1",
+        "last": "http://api.thedreamdividend.com/api/v1/admin/providers?page=1",
+        "prev": null,
+        "next": null
+      },
+      "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "per_page": 10,
+        "to": 4,
+        "total": 4
+      }
+    }
+  }
+  ```

@@ -1,0 +1,51 @@
+info:
+  name: Approve Provider
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/admin/providers/{{selectedProviderId}}/approve"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  auth: inherit
+
+vars:
+  selectedProviderId: 1
+
+docs: |-
+  # Admin Service Providers & KYC Moderation - Approve Provider Application
+  
+  Approves a partner provider's application. Sets `verification_status = 'approved'`, `is_verified = true`, `is_live = true`, approves all submitted documents, and automatically grants the applicant the `vendor` role.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Service provider approved successfully.",
+    "data": {
+      "id": 1,
+      "name": "Pawsome Pet Shop",
+      "slug": "pawsome-pet-shop",
+      "type": "pet_shop",
+      "type_label": "Pet Shop",
+      "owner_name": "John Doe",
+      "email": "vendor@pawsome.com",
+      "phone": "+15551234567",
+      "city": "Austin",
+      "status": "approved",
+      "verification_status": "approved",
+      "is_verified": true,
+      "is_live": true,
+      "rejection_reason": null,
+      "is_suspended": false
+    }
+  }
+  ```

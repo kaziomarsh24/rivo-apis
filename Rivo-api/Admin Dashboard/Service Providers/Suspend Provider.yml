@@ -1,0 +1,58 @@
+info:
+  name: Suspend Provider
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/admin/providers/{{selectedProviderId}}/suspend"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "reason": "Suspension due to repeated critical customer complaints regarding expired items.",
+        "admin_note": "Case opened under ticket #MOD-8821. Store offline until audit concludes."
+      }
+  auth: inherit
+
+vars:
+  selectedProviderId: 1
+
+docs: |-
+  # Admin Service Providers & KYC Moderation - Suspend Active Provider
+  
+  Suspends an active provider store. Immediately removes the store from marketplace visibility (`is_live = false`) and marks `suspended_at` with reason.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Body Parameters
+  - `reason`: (string, required, min: 3, max: 500) Suspension explanation.
+  - `admin_note`: (string, optional, max: 1000) Internal moderator reference notes.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Service provider suspended successfully.",
+    "data": {
+      "id": 1,
+      "name": "Pawsome Pet Shop",
+      "slug": "pawsome-pet-shop",
+      "type": "pet_shop",
+      "status": "suspended",
+      "is_suspended": true,
+      "suspended_at": "2026-11-02T05:30:00.000000Z",
+      "suspension_reason": "Suspension due to repeated critical customer complaints regarding expired items.",
+      "is_live": false
+    }
+  }
+  ```

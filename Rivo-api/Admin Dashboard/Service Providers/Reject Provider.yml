@@ -1,0 +1,58 @@
+info:
+  name: Reject Provider
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{base_url}}/v1/admin/providers/{{selectedProviderId}}/reject"
+  headers:
+    - name: Accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "reason": "Submitted trade license is expired and business address cannot be verified.",
+        "admin_note": "Applicant may reapply after providing current valid documents."
+      }
+  auth: inherit
+
+vars:
+  selectedProviderId: 1
+
+docs: |-
+  # Admin Service Providers & KYC Moderation - Reject Provider Application
+  
+  Rejects a provider's application with a required reason. Updates `verification_status = 'rejected'`, marks submitted documents as rejected, and sets `is_live = false`.
+  
+  ### Security
+  - **Required Role**: `admin`
+  - **Header**: `Authorization: Bearer {{adminToken}}`
+  
+  ### Body Parameters
+  - `reason`: (string, required, min: 3, max: 500) The rejection explanation visible to the applicant.
+  - `admin_note`: (string, optional, max: 1000) Internal moderator reference notes.
+  
+  ### Expected Response (`200 OK`)
+  ```json
+  {
+    "ok": true,
+    "message": "Service provider application rejected.",
+    "data": {
+      "id": 1,
+      "name": "Pawsome Pet Shop",
+      "slug": "pawsome-pet-shop",
+      "type": "pet_shop",
+      "status": "rejected",
+      "verification_status": "rejected",
+      "rejection_reason": "Submitted trade license is expired and business address cannot be verified.",
+      "is_verified": false,
+      "is_live": false
+    }
+  }
+  ```
